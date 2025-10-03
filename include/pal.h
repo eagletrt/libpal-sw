@@ -16,15 +16,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define PAL_BUFF_SIZE 0xfff
-
 /*!
  * \brief           Enumeration with all possible return codes of the library.
  */
-typedef enum PalReturnCode {
-    PAL_OK,      /*!< Everything is fine */
-    PAL_NULL_PTR /*!< Unexpected NULL pointer detected */
-} PalReturnCode_t;
+enum PalReturnCode {
+    PAL_RC_OK,      /*!< Everything is fine */
+    PAL_RC_NULL_PTR /*!< Unexpected NULL pointer detected */
+};
 
 /*!
  * \brief           A structure that encapsulate data and functions required to
@@ -32,8 +30,7 @@ typedef enum PalReturnCode {
  *
  * \attention       This structure should not be used directly.
  */
-typedef struct PalHandler {
-    uint8_t buff[PAL_BUFF_SIZE]; /*!< Raw data buffer */
-} PalHandler_t;
+struct PalHandler {
+};
 
 #endif /*! PAL_H */

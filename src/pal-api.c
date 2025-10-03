@@ -13,11 +13,11 @@
 #include "pal.h"
 #include "pal-api.h"
 
-PalReturnCode_t pal_api_init(PalHandler_t *hpal) {
+enum PalReturnCode pal_api_init(struct PalHandler *hpal) {
     if (hpal == NULL)
-        return PAL_NULL_PTR;
+        return PAL_RC_NULL_PTR;
 
     (void)hpal;
 
-    return PAL_OK;
+    return PAL_RC_OK;
 }

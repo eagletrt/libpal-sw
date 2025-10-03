@@ -15,6 +15,6 @@
 
 #include "pal.h"
 
-PalReturnCode_t pal_api_init(PalHandler_t *hpal);
+enum PalReturnCode pal_api_init(struct PalHandler *hpal);
 
 #endif /*! PAL_API_H */
