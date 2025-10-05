@@ -3,11 +3,7 @@
   "name": "libpal",
   "version": "0.0.1",
   "description": "Peripheral Abstraction Layer (PAL) library, suited for all embedded devices ",
-  "keywords": [
-    "Abstraction",
-    "CAN",
-    "Peripheral"
-  ],
+  "keywords": ["Abstraction", "CAN", "Peripheral"],
   "repository": {
     "type": "git",
     "url": "https://github.com/eagletrt/libpal-sw.git"
@@ -24,8 +20,8 @@
       "maintainer": true
     },
     {
-      "name": "Rodrigo Salas",
-      "email": "rodrigo.salas@eagletrt.it",
+      "name": "Mirko Lana",
+      "email": "mirko.lana@eagletrt.it",
       "maintainer": true
     }
   ],
@@ -39,15 +35,12 @@
     },
     {
       "name": "RingBuffer",
-      "version": "https://github.com/eagletrt/libring-buffer-sw.git#0.1.0"
+      "version": "https://github.com/eagletrt/libring-buffer-sw.git"
     }
   ],
   "headers": [],
   "examples": [],
   "export": {
-    "include": [
-      "src/**",
-      "include/**"
-    ]
+    "include": ["src/**", "include/**"]
   }
 }
