@@ -38,6 +38,7 @@
  */
 enum PalReturnCode pal_api_init(
     struct PalHandler *hpal,
+    enum PalProtocol protocol,
     pal_recv_raw_fn recv,
     pal_send_raw_fn send,
     void *driver_ctx,

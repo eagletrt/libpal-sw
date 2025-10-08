@@ -45,6 +45,7 @@ static void prv_pal_api_dummy_fn(void) {
 
 enum PalReturnCode pal_api_init(
     struct PalHandler *hpal,
+    enum PalProtocol protocol,
     pal_recv_raw_fn recv,
     pal_send_raw_fn send,
     void *driver_ctx,
@@ -54,6 +55,8 @@ enum PalReturnCode pal_api_init(
     ArenaAllocatorHandler_t *arena) {
     if (hpal == NULL)
         return PAL_RC_NULL_PTR;
+
+    hpal->protocol = protocol;
 
     hpal->send = send == NULL ? prv_pal_api_dummy_send : send;
     hpal->recv = recv == NULL ? prv_pal_api_dummy_recv : recv;

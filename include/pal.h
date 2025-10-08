@@ -57,6 +57,14 @@ enum PalReturnCode {
     PAL_RC_BUFF_FULL,  /*!< Rx or Tx buffer is full */
 };
 
+enum PalProtocol{
+    PAL_PROTO_CAN,
+    PAL_PROTO_SPI,
+    PAL_PROTO_I2C,
+    PAL_PROTO_UART,
+    PAL_PROTO_USART,
+};
+
 /*!
  * \brief           Type definition for a function pointer used to send data.
  *
@@ -108,6 +116,7 @@ struct PalMessage {
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
+    enum PalProtocol protocol;
     pal_send_raw_fn send;
     pal_recv_raw_fn recv;
     void *driver_ctx;
@@ -115,7 +124,7 @@ struct PalHandler {
     RingBufferHandler_t rx_buffer; // Owned by PAL
     void (*enter_cs)(void);
     void (*exit_cs)(void);
-    void (*app_cb)(void);  // to be called by pal_api_driver_receive_callback when data is received TODO: define the function signature
+    void (*app_rx_cb)(void);  // to be called by pal_api_driver_receive_callback when data is received TODO: define the function signature
 };
 
 #endif /*! PAL_H */
