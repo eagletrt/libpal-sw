@@ -55,7 +55,7 @@ enum PalReturnCode {
     PAL_RC_IO_ERR,     /*!< Generic I/O error */
     PAL_RC_BUFF_FULL,  /*!< Rx or Tx buffer is full */
     PAL_RC_TOO_BIG,    /*!< Size of the message bigger than buffer size */
-    PAL_RC_DESER_ERR,  /*!< Deserialization error */
+    PAL_RC_DESR_ERR,  /*!< Deserialization error */
     PAL_RC_SER_ERR,    /*!< Serialization error */
 };
 
