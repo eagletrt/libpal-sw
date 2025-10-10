@@ -26,12 +26,15 @@
  * \brief           Initialize the P.A.L. handler.
  *
  * \param[out]      hpal: A pointer to the handler to initialize.
+ * \param[in]       protocol: Protocol used
  * \param[in]       send: Send function
  * \param[in]       recv: Receive function
  * \param[in]       driver_ctx: Internal driver context
  * \param[in]       enter_cs: Enter critical section function
  * \param[in]       exit_cs: Exit critical section function
- * \param[in]       app_cb: Application callback function
+ * \param[in]       app_rx_cb: Application callback function
+ * \param[in]       serialize: Serialize function
+ * \param[in]       deserialize: Deserialize function
  * \param[in]       arena: Arena allocator handler (already initialized)
  * \return          PAL_RC_OK on success, and error code otherwise:
  *                      - PAL_RC_NULL_PTR
@@ -44,9 +47,10 @@ enum PalReturnCode pal_api_init(
     void *driver_ctx,
     void (*enter_cs)(void),
     void (*exit_cs)(void),
-    void (*app_cb)(void),
-    ArenaAllocatorHandler_t *arena
-);
+    void (*app_rx_cb)(void),
+    pal_serialize_fn serialize,
+    pal_deserialize_fn deserialize,
+    ArenaAllocatorHandler_t *arena);
 
 /*!
  * \brief           Function called by the driver inside the ISR routine to give the message data to PAL
@@ -89,5 +93,13 @@ enum PalReturnCode pal_api_send(struct PalHandler *hpal, const void *data, pal_s
  * \return          PAL_RC_OK on success, an error code otherwise.
  */
 // enum PalReturnCode pal_api_recv(struct PalHandler *hpal, void *data, pal_deserialize_fn deserialize);
+
+/*!
+ * \brief Function to process all the messages in the rx queue, to be called by the application
+ *
+ * \param[out]      hpal:
+ * \return          PAL_RC_OK on success, an error code otherwise.
+ */
+enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal);
 
 #endif /*! PAL_API_H */
