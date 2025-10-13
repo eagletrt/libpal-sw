@@ -88,6 +88,7 @@ enum PalReturnCode pal_api_init(
 }
 
 enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_data, size_t size, pal_deserialize_fn deserialize) {
+    hpal->enter_cs();
     if (hpal == NULL)
         return PAL_RC_NULL_PTR;
 
@@ -97,14 +98,12 @@ enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_dat
     if (size > PAL_RX_BUFFER_SIZE)
         return PAL_RC_TOO_BIG;
 
-    hpal->enter_cs();
-
     struct PalMessage msg = { 0 };
     msg.size = size;
     memcpy(msg.raw_data, raw_data, size);
 
     RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_buffer, &msg);
-    if (res != RING_BUFFER_OK) { // TODO: change to return code to PAL_RC_BUFF_FULL? this can only happen if the buffer became full between checks, consder moving enter_cs to top?
+    if (res != RING_BUFFER_OK) {
         hpal->exit_cs();
         return PAL_RC_IO_ERR;
     }
