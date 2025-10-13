@@ -76,11 +76,11 @@ enum PalReturnCode pal_api_init(
     if (app_rx_cb == NULL)
         return PAL_RC_NULL_PTR;
 
-    RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_buffer, 1U, PAL_TX_BUFFER_SIZE, NULL, NULL, arena); //enter_cs, exit_cs, arena);
+    RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_buffer, sizeof(struct PalMessage), PAL_TX_BUFFER_SIZE, NULL, NULL, arena);
     if (res != RING_BUFFER_OK)
         return PAL_RC_NULL_PTR;
 
-    res = ring_buffer_api_init(&hpal->rx_buffer, 1U, PAL_RX_BUFFER_SIZE, NULL, NULL, arena); // enter_cs, exit_cs, arena);
+    res = ring_buffer_api_init(&hpal->rx_buffer, sizeof(struct PalMessage), PAL_RX_BUFFER_SIZE, NULL, NULL, arena);
     if (res != RING_BUFFER_OK)
         return PAL_RC_NULL_PTR;
 
@@ -114,13 +114,13 @@ enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_dat
 }
 
 enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal) {
-    while (true) { // Done to avoid checking buffer status outside cs, cs inside loop to allow for messages to be inserted while processing
+    while (true) {
         hpal->enter_cs();
+
         if (ring_buffer_api_is_empty(&hpal->rx_buffer)) {
             hpal->exit_cs();
             break;
-        }
-        if (ring_buffer_api_is_full(&hpal->rx_buffer)) {
+        } else if (ring_buffer_api_is_full(&hpal->rx_buffer)) {
             hpal->exit_cs();
             return PAL_RC_BUFF_FULL;
         }
@@ -130,14 +130,14 @@ enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal) {
             hpal->exit_cs();
             return PAL_RC_IO_ERR;
         }
+
+        hpal->exit_cs();
         void *desr_msg = NULL;
         size_t size;
         enum PalReturnCode res = hpal->deserialize(&msg, desr_msg, &size);
         if (res != PAL_RC_OK) {
-            hpal->exit_cs();
             return PAL_RC_DESR_ERR;
         }
-        hpal->exit_cs(); // Possible racecondition between line 137 and line 138?
         hpal->app_rx_cb(desr_msg, size);
     }
     return PAL_RC_OK;
