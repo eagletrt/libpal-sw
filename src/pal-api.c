@@ -98,9 +98,10 @@ enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_dat
     if (size > PAL_RX_BUFFER_SIZE)
         return PAL_RC_TOO_BIG;
 
-    struct PalMessage msg = { 0 };
-    msg.size = size;
-    memcpy(msg.raw_data, raw_data, size);
+    struct PalMessage msg = {
+        .size = size,
+        .ptr = raw_data,
+    };
 
     RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_buffer, &msg);
     if (res != RING_BUFFER_OK) {
@@ -120,9 +121,6 @@ enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal) {
         if (ring_buffer_api_is_empty(&hpal->rx_buffer)) {
             hpal->exit_cs();
             break;
-        } else if (ring_buffer_api_is_full(&hpal->rx_buffer)) {
-            hpal->exit_cs();
-            return PAL_RC_BUFF_FULL;
         }
         struct PalMessage msg = { 0 };
         RingBufferReturnCode res_buff = ring_buffer_api_pop_front(&hpal->rx_buffer, &msg);

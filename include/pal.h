@@ -74,7 +74,7 @@ enum PalProtocol {
  * \brief           A structure representing a message.
  */
 struct PalMessage {
-    uint8_t raw_data[PAL_MESSAGE_BUFFER_SIZE]; /*!< Raw data buffer */
+    void *ptr;
     size_t size;                               /*!< Data size */
 };
 
