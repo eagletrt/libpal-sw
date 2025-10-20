@@ -50,6 +50,7 @@ enum PalReturnCode {
     PAL_RC_TOO_BIG,    /*!< Size of the message bigger than buffer size */
     PAL_RC_DESR_ERR,   /*!< Deserialization error */
     PAL_RC_SER_ERR,    /*!< Serialization error */
+    PAL_RC_BUFF_EMPTY  /*!< Rx or Tx buffer is empty */
 };
 
 /*!
@@ -107,7 +108,7 @@ typedef int (*pal_serialize_fn)(void *input_data, const struct PalMessage *out_d
  * \param[out]      out_data_size: Size of the buffer in bytes.
  * \return          PAL_RC_OK on success, an error code otherwise.
  */
-typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *input_data, void *out_data, size_t *out_data_size);
+typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *input_data, void *out_data);
 
 /*!
  * \brief           A structure that encapsulate data and functions required to

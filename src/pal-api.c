@@ -111,23 +111,21 @@ enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_dat
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal) {
-    while (true) {
-        if (ring_buffer_api_is_empty(&hpal->rx_buffer)) {
-            break;
-        }
-        struct PalMessage msg = { 0 };
-        RingBufferReturnCode res_buff = ring_buffer_api_pop_front(&hpal->rx_buffer, &msg);
-        if (res_buff != RING_BUFFER_OK) {
-            return PAL_RC_IO_ERR;
-        }
-        void *desr_msg = NULL;
-        size_t size;
-        enum PalReturnCode res = hpal->deserialize(&msg, desr_msg, &size);
-        if (res != PAL_RC_OK) {
-            return PAL_RC_DESR_ERR;
-        }
-        hpal->app_rx_cb(desr_msg, size);
+enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void *destination) {
+    if (hpal == NULL) {
+        return PAL_RC_NULL_PTR;
+    }
+    if (ring_buffer_api_is_empty(&hpal->rx_buffer)) {
+        return PAL_RC_BUFF_EMPTY;
+    }
+    struct PalMessage msg = { 0 };
+    RingBufferReturnCode res_buff = ring_buffer_api_pop_front(&hpal->rx_buffer, &msg);
+    if (res_buff != RING_BUFFER_OK) {
+        return PAL_RC_IO_ERR;
+    }
+    enum PalReturnCode res = hpal->deserialize(&msg, destination);
+    if (res != PAL_RC_OK) {
+        return PAL_RC_DESR_ERR;
     }
     return PAL_RC_OK;
 }

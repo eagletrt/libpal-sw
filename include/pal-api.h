@@ -100,6 +100,6 @@ enum PalReturnCode pal_api_send(struct PalHandler *hpal, const void *data, pal_s
  * \param[out]      hpal:
  * \return          PAL_RC_OK on success, an error code otherwise.
  */
-enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal);
+enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void* destination);
 
 #endif /*! PAL_API_H */
