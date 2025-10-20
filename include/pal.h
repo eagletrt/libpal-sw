@@ -24,25 +24,18 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef PAL_MESSAGE_BUFFER_SIZE
-/*!
- * \brief           The default message buffer size.
- */
-#define PAL_MESSAGE_BUFFER_SIZE 0xFF
-#endif /*! PAL_MESSAGE_BUFFER_SIZE */
-
 #ifndef PAL_TX_BUFFER_SIZE
 /*!
  * \brief           The default transmit buffer size.
  */
-#define PAL_TX_BUFFER_SIZE 0xA
+#define PAL_TX_BUFFER_SIZE (10U)
 #endif /*! PAL_TX_BUFFER_SIZE */
 
 #ifndef PAL_RX_BUFFER_SIZE
 /*!
  * \brief           The default receive buffer size.
  */
-#define PAL_RX_BUFFER_SIZE PAL_TX_BUFFER_SIZE
+#define PAL_RX_BUFFER_SIZE (PAL_TX_BUFFER_SIZE)
 #endif /*! PAL_RX_BUFFER_SIZE */
 
 /*!
@@ -55,7 +48,7 @@ enum PalReturnCode {
     PAL_RC_IO_ERR,     /*!< Generic I/O error */
     PAL_RC_BUFF_FULL,  /*!< Rx or Tx buffer is full */
     PAL_RC_TOO_BIG,    /*!< Size of the message bigger than buffer size */
-    PAL_RC_DESR_ERR,  /*!< Deserialization error */
+    PAL_RC_DESR_ERR,   /*!< Deserialization error */
     PAL_RC_SER_ERR,    /*!< Serialization error */
 };
 
@@ -75,7 +68,7 @@ enum PalProtocol {
  */
 struct PalMessage {
     void *ptr;
-    size_t size;                               /*!< Data size */
+    size_t size; /*!< Data size */
 };
 
 /*!

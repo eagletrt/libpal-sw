@@ -76,11 +76,11 @@ enum PalReturnCode pal_api_init(
     if (app_rx_cb == NULL)
         return PAL_RC_NULL_PTR;
 
-    RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_buffer, sizeof(struct PalMessage), PAL_TX_BUFFER_SIZE, NULL, NULL, arena);
+    RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_buffer, sizeof(struct PalMessage), PAL_TX_BUFFER_SIZE, hpal->enter_cs, hpal->exit_cs, arena);
     if (res != RING_BUFFER_OK)
         return PAL_RC_NULL_PTR;
 
-    res = ring_buffer_api_init(&hpal->rx_buffer, sizeof(struct PalMessage), PAL_RX_BUFFER_SIZE, NULL, NULL, arena);
+    res = ring_buffer_api_init(&hpal->rx_buffer, sizeof(struct PalMessage), PAL_RX_BUFFER_SIZE, hpal->enter_cs, hpal->exit_cs, arena);
     if (res != RING_BUFFER_OK)
         return PAL_RC_NULL_PTR;
 
@@ -88,7 +88,6 @@ enum PalReturnCode pal_api_init(
 }
 
 enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_data, size_t size, pal_deserialize_fn deserialize) {
-    hpal->enter_cs();
     if (hpal == NULL)
         return PAL_RC_NULL_PTR;
 
@@ -105,10 +104,8 @@ enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_dat
 
     RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_buffer, &msg);
     if (res != RING_BUFFER_OK) {
-        hpal->exit_cs();
         return PAL_RC_IO_ERR;
     }
-    hpal->exit_cs();
 
     hpal->app_event_notify(hpal->protocol);
     return PAL_RC_OK;
@@ -116,20 +113,14 @@ enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_dat
 
 enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal) {
     while (true) {
-        hpal->enter_cs();
-
         if (ring_buffer_api_is_empty(&hpal->rx_buffer)) {
-            hpal->exit_cs();
             break;
         }
         struct PalMessage msg = { 0 };
         RingBufferReturnCode res_buff = ring_buffer_api_pop_front(&hpal->rx_buffer, &msg);
         if (res_buff != RING_BUFFER_OK) {
-            hpal->exit_cs();
             return PAL_RC_IO_ERR;
         }
-
-        hpal->exit_cs();
         void *desr_msg = NULL;
         size_t size;
         enum PalReturnCode res = hpal->deserialize(&msg, desr_msg, &size);
