@@ -33,35 +33,21 @@ static int prv_pal_api_dummy_send(const uint8_t *raw_data, size_t size) {
     return 0;
 }
 
-static int prv_pal_api_dummy_recv(uint8_t *raw_data, size_t size) {
-    /*! Avoid "unused variable" warning messages */
-    (void)raw_data;
-    (void)size;
-    return 0;
-}
-
 static void prv_pal_api_dummy_fn(void) {
 }
 
 enum PalReturnCode pal_api_init(
     struct PalHandler *hpal,
-    enum PalProtocol protocol,
-    pal_recv_raw_fn recv,
     pal_send_raw_fn send,
-    void *driver_ctx,
     void (*enter_cs)(void),
     void (*exit_cs)(void),
-    void (*app_rx_cb)(void),
     pal_serialize_fn serialize,
     pal_deserialize_fn deserialize,
     ArenaAllocatorHandler_t *arena) {
     if (hpal == NULL)
         return PAL_RC_NULL_PTR;
 
-    hpal->protocol = protocol;
-
     hpal->send = send == NULL ? prv_pal_api_dummy_send : send;
-    hpal->recv = recv == NULL ? prv_pal_api_dummy_recv : recv;
     hpal->enter_cs = enter_cs == NULL ? prv_pal_api_dummy_fn : enter_cs;
     hpal->exit_cs = exit_cs == NULL ? prv_pal_api_dummy_fn : exit_cs;
 
@@ -70,11 +56,6 @@ enum PalReturnCode pal_api_init(
     }
     hpal->deserialize = deserialize;
     hpal->serialize = serialize;
-
-    hpal->driver_ctx = driver_ctx;
-
-    if (app_rx_cb == NULL)
-        return PAL_RC_NULL_PTR;
 
     RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_buffer, sizeof(struct PalMessage), PAL_TX_BUFFER_SIZE, hpal->enter_cs, hpal->exit_cs, arena);
     if (res != RING_BUFFER_OK)

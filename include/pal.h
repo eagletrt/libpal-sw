@@ -54,17 +54,6 @@ enum PalReturnCode {
 };
 
 /*!
- * \brief           Enumeration with all possible protocols supported by the library.
- */
-enum PalProtocol {
-    PAL_PROTO_CAN,
-    PAL_PROTO_SPI,
-    PAL_PROTO_I2C,
-    PAL_PROTO_UART,
-    PAL_PROTO_USART,
-};
-
-/*!
  * \brief           A structure representing a message.
  */
 struct PalMessage {
@@ -80,15 +69,6 @@ struct PalMessage {
  * \return          0 on success, -1 otherwise.
  */
 typedef int (*pal_send_raw_fn)(const uint8_t *raw_data, size_t size);
-
-/*!
- * \brief           Type definition for a function pointer used to receive data.
- *
- * \param[out]      raw_data: Pointer to the data to be received.
- * \param[in]       size: Size of the data buffer in bytes.
- * \return          The number of bytes received on success, -1 otherwise.
- */
-typedef int (*pal_recv_raw_fn)(uint8_t *raw_data, size_t size);
 
 /*!
  * \brief           Type definition for a function pointer used to serialize data.
@@ -117,16 +97,11 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *input_
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    enum PalProtocol protocol;
     pal_send_raw_fn send;
-    pal_recv_raw_fn recv; // TODO: consider removing this, could this be used for polling recv?
-    void *driver_ctx;
     RingBufferHandler_t tx_buffer; // Owned by PAL
     RingBufferHandler_t rx_buffer; // Owned by PAL
     void (*enter_cs)(void);
     void (*exit_cs)(void);
-    void (*app_event_notify)(enum PalProtocol protocol);
-    void (*app_rx_cb)(void *ders_msg, size_t size); // to be called by pal_procces_rx when data is received TODO: define the function signature
     pal_serialize_fn serialize;
     pal_deserialize_fn deserialize;
 };

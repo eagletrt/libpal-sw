@@ -41,13 +41,9 @@
  */
 enum PalReturnCode pal_api_init(
     struct PalHandler *hpal,
-    enum PalProtocol protocol,
-    pal_recv_raw_fn recv,
     pal_send_raw_fn send,
-    void *driver_ctx,
     void (*enter_cs)(void),
     void (*exit_cs)(void),
-    void (*app_rx_cb)(void),
     pal_serialize_fn serialize,
     pal_deserialize_fn deserialize,
     ArenaAllocatorHandler_t *arena);
