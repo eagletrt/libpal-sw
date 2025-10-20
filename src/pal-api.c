@@ -87,15 +87,12 @@ enum PalReturnCode pal_api_init(
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_data, size_t size, pal_deserialize_fn deserialize) {
+enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, size_t size) {
     if (hpal == NULL)
         return PAL_RC_NULL_PTR;
 
     if (ring_buffer_api_is_full(&hpal->rx_buffer))
         return PAL_RC_BUFF_FULL;
-
-    if (size > PAL_RX_BUFFER_SIZE)
-        return PAL_RC_TOO_BIG;
 
     struct PalMessage msg = {
         .size = size,

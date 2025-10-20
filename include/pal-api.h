@@ -58,10 +58,9 @@ enum PalReturnCode pal_api_init(
  * \param[out]      hpal: PAL handler
  * \param[out]      raw_data: Raw data buffer provided by the driver
  * \param[in]       size: Size of the raw data buffer
- * \param[in]       deserialize: Deserialization function
  * \return          PAL_RC_OK on success, an error code otherwise.
  */
-enum PalReturnCode pal_api_drv_recv_cb(struct PalHandler *hpal, uint8_t *raw_data, size_t size, pal_deserialize_fn deserialize);
+enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, size_t size);
 
 /*!
  * \brief           TBD
@@ -100,6 +99,6 @@ enum PalReturnCode pal_api_send(struct PalHandler *hpal, const void *data, pal_s
  * \param[out]      hpal:
  * \return          PAL_RC_OK on success, an error code otherwise.
  */
-enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void* destination);
+enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void *destination);
 
 #endif /*! PAL_API_H */
