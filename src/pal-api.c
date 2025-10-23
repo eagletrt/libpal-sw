@@ -47,13 +47,13 @@ enum PalReturnCode pal_api_init(
     if (hpal == NULL)
         return PAL_RC_NULL_PTR;
 
-    hpal->send = send == NULL ? prv_pal_api_dummy_send : send;
-    hpal->enter_cs = enter_cs == NULL ? prv_pal_api_dummy_fn : enter_cs;
-    hpal->exit_cs = exit_cs == NULL ? prv_pal_api_dummy_fn : exit_cs;
-
     if (hpal->deserialize == NULL || hpal->serialize == NULL) {
         return PAL_RC_NULL_PTR;
     }
+
+    hpal->send = send == NULL ? prv_pal_api_dummy_send : send;
+    hpal->enter_cs = enter_cs == NULL ? prv_pal_api_dummy_fn : enter_cs;
+    hpal->exit_cs = exit_cs == NULL ? prv_pal_api_dummy_fn : exit_cs;
     hpal->deserialize = deserialize;
     hpal->serialize = serialize;
 
