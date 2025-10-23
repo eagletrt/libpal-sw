@@ -35,6 +35,8 @@
  * \param[in]       app_rx_cb: Application callback function
  * \param[in]       serialize: Serialize function
  * \param[in]       deserialize: Deserialize function
+ * \param[in]       rx_buffer_size: Size of the receive buffer
+ * \param[in]       tx_buffer_size: Size of the transmit buffer
  * \param[in]       arena: Arena allocator handler (already initialized)
  * \return          PAL_RC_OK on success, and error code otherwise:
  *                      - PAL_RC_NULL_PTR
@@ -46,6 +48,8 @@ enum PalReturnCode pal_api_init(
     void (*exit_cs)(void),
     pal_serialize_fn serialize,
     pal_deserialize_fn deserialize,
+    size_t rx_buffer_size,
+    size_t tx_buffer_size,
     ArenaAllocatorHandler_t *arena);
 
 /*!

@@ -24,33 +24,20 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef PAL_TX_BUFFER_SIZE
-/*!
- * \brief           The default transmit buffer size.
- */
-#define PAL_TX_BUFFER_SIZE (10U)
-#endif /*! PAL_TX_BUFFER_SIZE */
-
-#ifndef PAL_RX_BUFFER_SIZE
-/*!
- * \brief           The default receive buffer size.
- */
-#define PAL_RX_BUFFER_SIZE (PAL_TX_BUFFER_SIZE)
-#endif /*! PAL_RX_BUFFER_SIZE */
-
 /*!
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,         /*!< Everything is fine */
-    PAL_RC_NULL_PTR,   /*!< Unexpected NULL pointer detected */
-    PAL_RC_WRONG_SIZE, /*!< Size mismatch */
-    PAL_RC_IO_ERR,     /*!< Generic I/O error */
-    PAL_RC_BUFF_FULL,  /*!< Rx or Tx buffer is full */
-    PAL_RC_TOO_BIG,    /*!< Size of the message bigger than buffer size */
-    PAL_RC_DESR_ERR,   /*!< Deserialization error */
-    PAL_RC_SER_ERR,    /*!< Serialization error */
-    PAL_RC_BUFF_EMPTY  /*!< Rx or Tx buffer is empty */
+    PAL_RC_OK,           /*!< Everything is fine */
+    PAL_RC_NULL_PTR,     /*!< Unexpected NULL pointer detected */
+    PAL_RC_WRONG_SIZE,   /*!< Size mismatch */
+    PAL_RC_IO_ERR,       /*!< Generic I/O error */
+    PAL_RC_BUFF_FULL,    /*!< Rx or Tx buffer is full */
+    PAL_RC_TOO_BIG,      /*!< Size of the message bigger than buffer size */
+    PAL_RC_DESR_ERR,     /*!< Deserialization error */
+    PAL_RC_SER_ERR,      /*!< Serialization error */
+    PAL_RC_BUFF_EMPTY,   /*!< Rx or Tx buffer is empty */
+    PAL_RC_INVALID_PARAM /*!< Invalid parameter value */
 };
 
 /*!
