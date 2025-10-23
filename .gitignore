@@ -421,7 +421,5 @@ STM32Make.make
 #in case git exclude is not used
 .local_gitignore
 
-### MARIO'S STUFF ###
-tmp.txt
 
 ## ---------------- END MANUALLY ADDED ---------------- ##
