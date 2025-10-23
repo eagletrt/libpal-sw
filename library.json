@@ -35,7 +35,7 @@
     },
     {
       "name": "RingBuffer",
-      "version": "https://github.com/eagletrt/libring-buffer-sw.git"
+      "version": "https://github.com/eagletrt/libring-buffer-sw.git#v0.1.0"
     }
   ],
   "headers": [
