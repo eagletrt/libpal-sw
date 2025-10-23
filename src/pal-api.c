@@ -85,7 +85,6 @@ enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, si
         return PAL_RC_IO_ERR;
     }
 
-    hpal->app_event_notify(hpal->protocol);
     return PAL_RC_OK;
 }
 
