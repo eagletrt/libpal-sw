@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
   "name": "libpal",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Peripheral Abstraction Layer (PAL) library, suited for all embedded devices",
   "keywords": ["Abstraction", "CAN", "Peripheral"],
   "repository": {
