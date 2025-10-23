@@ -38,7 +38,10 @@
       "version": "https://github.com/eagletrt/libring-buffer-sw.git"
     }
   ],
-  "headers": [],
+  "headers": [
+      "pal.h",
+      "pal-api.h"
+  ],
   "examples": [],
   "export": {
     "include": ["src/**", "include/**"]
