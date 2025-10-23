@@ -59,17 +59,6 @@ enum PalReturnCode pal_api_init(
 enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, size_t size);
 
 /*!
- * \brief           TBD
- *
- * \param[out]      hpal:
- * \param[out]      raw_data:
- * \param[in]       size:
- * \param[in]       serialize:
- * \return          PAL_RC_OK on success, an error code otherwise.
- */
-// enum PalReturnCode pal_api_drv_send_cb(struct PalHandler *hpal, uint8_t *raw_data, size_t size, pal_serialize_fn serialize);
-
-/*!
  * \brief           Function to send data using the provided handler and serialization function
  *
  * \param[out]      hpal:
@@ -78,16 +67,6 @@ enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, si
  * \return          PAL_RC_OK on success, an error code otherwise.
  */
 enum PalReturnCode pal_api_send(struct PalHandler *hpal, const void *data, pal_serialize_fn serialize);
-
-/*!
- * \brief           TBD
- *
- * \param[out]      hpal:
- * \param[out]      data:
- * \param[in]       deserialize:
- * \return          PAL_RC_OK on success, an error code otherwise.
- */
-// enum PalReturnCode pal_api_recv(struct PalHandler *hpal, void *data, pal_deserialize_fn deserialize);
 
 /*!
  * \brief Function to process all the messages in the rx queue, to be called by the application
