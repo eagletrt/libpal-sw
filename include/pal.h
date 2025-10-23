@@ -49,25 +49,6 @@ struct PalMessage {
 };
 
 /*!
- * \brief           Type definition for a function pointer used to send data.
- *
- * \param[in]       raw_data: Pointer to the data to be sent.
- * \param[in]       size: Size of the data buffer in bytes.
- * \return          0 on success, -1 otherwise.
- */
-typedef int (*pal_send_raw_fn)(const uint8_t *raw_data, size_t size);
-
-/*!
- * \brief           Type definition for a function pointer used to serialize data.
- *
- * \param[in]       input_data: Pointer to the data to be serialized
- * \param[out]      out_data: Pointer to the serialized data.
- * \param[in]       size: Size of the buffer in bytes.
- * \return          The number of bytes received on success, -1 otherwise.
- */
-typedef int (*pal_serialize_fn)(void *input_data, const struct PalMessage *out_data, size_t size);
-
-/*!
  * \brief           Type definition for a function pointer used to deserialize data.
  *
  * \param[in]       input_data: Pointer to the data to be deserialized.
@@ -84,12 +65,10 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *input_
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    pal_send_raw_fn send;
     RingBufferHandler_t tx_buffer; // Owned by PAL
     RingBufferHandler_t rx_buffer; // Owned by PAL
     void (*enter_cs)(void);
     void (*exit_cs)(void);
-    pal_serialize_fn serialize;
     pal_deserialize_fn deserialize;
 };
 
