@@ -85,7 +85,7 @@ void tearDown() {
 
 /*!
  * \defgroup            pal_init Test P.A.L. init
- * \{
+ * @{
  */
 
 void check_pal_api_init_null_pal_handler(void) {
@@ -109,12 +109,12 @@ void check_pal_api_init_ok(void) {
 }
 
 /*!
- * \}
+ * @}
  */
 
 /*!
  * \defgroup            pal_add_to_tx_queue Test P.A.L. add_to_tx_queue
- * \{
+ * @{
  */
 
 void check_pal_api_add_to_tx_queue_null_pal_handler(void) {
@@ -140,12 +140,12 @@ void check_pal_api_add_to_tx_queue_ok(void) {
 }
 
 /*!
- * \}
+ * @}
  */
 
 /*!
  * \defgroup            pal_exec_tx Test P.A.L. exec_tx
- * \{
+ * @{
  */
 
 void check_pal_api_exec_tx_null_pal_handler(void) {
@@ -185,7 +185,7 @@ void check_pal_api_exec_tx_send_error(void) {
 }
 
 /*!
- * \}
+ * @}
  */
 
 int main(void) {
@@ -193,7 +193,7 @@ int main(void) {
 
     /*!
      * \defgroup            pal_init Test P.A.L. init
-     * \{
+     * @{
      */
 
     RUN_TEST(check_pal_api_init_null_pal_handler);
@@ -202,12 +202,12 @@ int main(void) {
     RUN_TEST(check_pal_api_init_null_serialize_function);
 
     /*!
-     * \}
+     * @}
      */
 
     /*!
      * \defgroup            pal_add_to_tx_queue Test P.A.L. add_to_tx_queue
-     * \{
+     * @{
      */
 
     RUN_TEST(check_pal_api_add_to_tx_queue_null_pal_handler);
@@ -216,12 +216,12 @@ int main(void) {
     RUN_TEST(check_pal_api_add_to_tx_queue_ok);
 
     /*!
-     * \}
+     * @}
      */
 
     /*!
      * \defgroup            pal_exec_tx Test P.A.L. exec_tx
-     * \{
+     * @{
      */
 
     RUN_TEST(check_pal_api_exec_tx_null_pal_handler);
@@ -231,7 +231,7 @@ int main(void) {
     RUN_TEST(check_pal_api_exec_tx_send_error);
 
     /*!
-     * \}
+     * @}
      */
 
     UNITY_END();

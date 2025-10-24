@@ -38,10 +38,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
 
     hpal->send = send;
     hpal->serialize = serialize;
-
-    RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_queue, sizeof(void *), tx_capacity, cs_enter, cs_exit, arena);
-    if (res != RING_BUFFER_OK)
-        return PAL_RC_NULL_PTR;
+    ring_buffer_api_init(&hpal->tx_queue, sizeof(void *), tx_capacity, cs_enter, cs_exit, arena);
 
     return PAL_RC_OK;
 }

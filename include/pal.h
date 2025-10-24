@@ -28,11 +28,11 @@
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,         /*!< Everything is fine */
-    PAL_RC_NULL_PTR,   /*!< Unexpected NULL pointer detected */
-    PAL_RC_IO_ERR,     /*!< Generic I/O error */
-    PAL_RC_QUEUE_FULL, /*!< Rx or Tx queue is full */
-    PAL_RC_QUEUE_EMPTY /*!< Rx or Tx queue is empty */
+    PAL_RC_OK,         /*!< Everything is fine. */
+    PAL_RC_NULL_PTR,   /*!< Unexpected NULL pointer. */
+    PAL_RC_IO_ERR,     /*!< Generic I/O error. */
+    PAL_RC_QUEUE_FULL, /*!< The queue is full. */
+    PAL_RC_QUEUE_EMPTY /*!< The queue is empty. */
 };
 
 /*!
@@ -61,9 +61,9 @@ typedef int (*pal_serialize_fn)(const void *in, uint8_t *out, size_t size);
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    pal_send_fn send;             /*!< */
-    RingBufferHandler_t tx_queue; /*!< */
-    pal_serialize_fn serialize;   /*!< */
+    pal_send_fn send;             /*!< Function pointer for sending data to the peripheral. */
+    RingBufferHandler_t tx_queue; /*!< Ring buffer handler for managing the outgoing data queue. */
+    pal_serialize_fn serialize;   /*!< Function pointer for serializing data before sending. */
 };
 
 #endif /*! PAL_H */

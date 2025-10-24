@@ -25,14 +25,14 @@
 /*!
  * \brief           Initialize the P.A.L. handler.
  * 
- * \param[out]      hpal:
- * \param[in]       tx_capacity:
- * \param[in]       send:
- * \param[in]       cs_enter:
- * \param[in]       cs_exit:
- * \param[out]      arena:
+ * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
+ * \param[in]       tx_capacity: The capacity of the transmission queue.
+ * \param[in]       send: A pointer to a function that should send messages to the desired peripheral.
+ * \param[in]       cs_enter: A pointer to a function that should manage a critical section (can be NULL).
+ * \param[in]       cs_exit: A pointer to a function that should exit a critical section (can be NULL).
+ * \param[out]      arena: A pointer to the arena allocator handler.
  * \return          PAL_RC_OK on success, an error otherwise:
- *                   - ...
+ *                   - PAL_RC_NULL_PTR  if `hpal`, `send`, or `serialize` is NULL.
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 size_t tx_capacity,
@@ -59,11 +59,11 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data);
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler.
  * \param[out]      buff: A pointer to the buffer used to transmit.
- * \param[out]      size: The size of `buff` buffer.
+ * \param[in]       size: The size of `buff` buffer.
  * \return          PAL_RC_OK on success, an error otherwise:
  *                   - PAL_RC_NULL_PTR if `hpal` or `buff` is NULL;
  *                   - PAL_RC_QUEUE_EMPTY if the transmission queue is full;
- *                   - PAL_RC_IO_ERR if the "pop-front" operation fails.
+ *                   - PAL_RC_IO_ERR if the "pop-front" operation or serialization fails.
  */
 enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal, uint8_t *buff, size_t size);
 
