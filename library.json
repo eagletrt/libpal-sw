@@ -1,31 +1,49 @@
 {
   "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
-  "name": "LibraryTemplate",
-  "version": "1.0.0",
-  "description": "Templates for libraries compatible with the PlatformIO ecosystem",
-  "keywords": [
-    "template"
-  ],
+  "name": "PAL",
+  "version": "0.1.0",
+  "description": "Peripheral Abstraction Layer (PAL) library, suited for all embedded devices ",
+  "keywords": ["Abstraction", "CAN", "Peripheral"],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/eagletrt/libpal-sw.git"
   },
   "authors": [
     {
       "name": "Antonio Gelain",
       "email": "antonio.gelain2@gmail.com",
+      "maintainer": false
+    },
+    {
+      "name": "Mario Mazzara",
+      "email": "mario.mazzara@eagletrt.it",
+      "maintainer": true
+    },
+    {
+      "name": "Mirko Lana",
+      "email": "mirko.lana@eagletrt.it",
       "maintainer": true
     }
   ],
   "license": "AGPL-3.0-only",
   "frameworks": "*",
   "platforms": "*",
-  "headers": [],
+  "dependencies": [
+    {
+      "name": "ArenaAllocator",
+      "version": "https://github.com/eagletrt/libarena-allocator-sw.git#v1.0.0"
+    },
+    {
+      "name": "RingBuffer",
+      "version": "https://github.com/eagletrt/libring-buffer-sw.git"
+    }
+  ],
+  "headers": [
+    "pal.h",
+    "pal-api.h"
+  ],
   "examples": [],
   "export": {
-    "include": [
-      "src/**",
-      "include/**"
-    ]
+    "include": ["src/**", "include/**"]
   }
 }
