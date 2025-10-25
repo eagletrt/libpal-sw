@@ -24,48 +24,46 @@
 
 /*!
  * \brief           Initialize the P.A.L. handler.
- *
- * \param[out]      hpal: A pointer to the handler to initialize.
- * \param[in]       protocol: Protocol used
- * \param[in]       send: Send function
- * \param[in]       recv: Receive function
- * \param[in]       driver_ctx: Internal driver context
- * \param[in]       enter_cs: Enter critical section function
- * \param[in]       exit_cs: Exit critical section function
- * \param[in]       app_rx_cb: Application callback function
- * \param[in]       serialize: Serialize function
- * \param[in]       deserialize: Deserialize function
- * \param[in]       rx_buffer_size: Size of the receive buffer
- * \param[in]       tx_buffer_size: Size of the transmit buffer
- * \param[in]       arena: Arena allocator handler (already initialized)
- * \return          PAL_RC_OK on success, and error code otherwise:
- *                      - PAL_RC_NULL_PTR
+ * 
+ * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
+ * \param[in]       rx_capacity: The capacity of the transmission queue.
+ * \param[in]       cs_enter: A pointer to a function that should manage a critical section (can be NULL).
+ * \param[in]       cs_exit: A pointer to a function that should exit a critical section (can be NULL).
+ * \param[out]      arena: A pointer to the arena allocator handler.
+ * \return          PAL_RC_OK on success, an error otherwise:
+ *                   - PAL_RC_NULL_PTR  if `hpal` or `deserialize` is NULL.
  */
-enum PalReturnCode pal_api_init(
-    struct PalHandler *hpal,
-    void (*enter_cs)(void),
-    void (*exit_cs)(void),
-    pal_deserialize_fn deserialize,
-    size_t rx_buffer_size,
-    size_t tx_buffer_size,
-    ArenaAllocatorHandler_t *arena);
+enum PalReturnCode pal_api_init(struct PalHandler *hpal,
+                                size_t tx_capacity,
+                                pal_deserialize_fn serialize,
+                                void (*cs_enter)(void),
+                                void (*cs_exit)(void),
+                                ArenaAllocatorHandler_t *arena);
+
+/*! 
+ * \brief           Add to the reception queue.
+ *
+ * \param[out]      hpal: A pointer to the P.A.L. handler.
+ * \param[out]      buff: A pointer to the buffer provided by the peripheral.
+ * \param[in]       size: The size of `out` buffer.
+ * \return          PAL_RC_OK on success, an error otherwise:
+ *                   - PAL_RC_NULL_PTR if `hpal` or `out` is NULL;
+ *                   - PAL_RC_QUEUE_FULL if the reception queue is full;
+ *                   - PAL_RC_IO_ERR if the "push-back" operation fails.
+ */
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, size_t size);
 
 /*!
- * \brief           Function called by the driver inside the ISR routine to give the message data to PAL
+ * \brief           Pop the first message and exec the deserialization.
  *
- * \param[out]      hpal: PAL handler
- * \param[out]      raw_data: Raw data buffer provided by the driver
- * \param[in]       size: Size of the raw data buffer
- * \return          PAL_RC_OK on success, an error code otherwise.
+ * \param[out]      hpal: A pointer to the P.A.L. handler.
+ * \param[out]      out: A pointer to the buffer used to transmit.
+ * \return          PAL_RC_OK on success, an error otherwise:
+ *                   - PAL_RC_NULL_PTR if `hpal` or `buff` is NULL;
+ *                   - PAL_RC_QUEUE_EMPTY if the reception queue is full;
+ *                   - PAL_RC_IO_ERR if the "pop-front" operation fails;
+ *                   - PAL_RC_DESER_ERR if the deserialization fails.
  */
-enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, size_t size);
-
-/*!
- * \brief Function to process all the messages in the rx queue, to be called by the application
- *
- * \param[out]      hpal:
- * \return          PAL_RC_OK on success, an error code otherwise.
- */
-enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void *destination);
+enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out);
 
 #endif /*! PAL_API_H */

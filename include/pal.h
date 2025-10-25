@@ -28,35 +28,30 @@
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,           /*!< Everything is fine */
-    PAL_RC_NULL_PTR,     /*!< Unexpected NULL pointer detected */
-    PAL_RC_WRONG_SIZE,   /*!< Size mismatch */
-    PAL_RC_IO_ERR,       /*!< Generic I/O error */
-    PAL_RC_BUFF_FULL,    /*!< Rx or Tx buffer is full */
-    PAL_RC_TOO_BIG,      /*!< Size of the message bigger than buffer size */
-    PAL_RC_DESR_ERR,     /*!< Deserialization error */
-    PAL_RC_SER_ERR,      /*!< Serialization error */
-    PAL_RC_BUFF_EMPTY,   /*!< Rx or Tx buffer is empty */
-    PAL_RC_INVALID_PARAM /*!< Invalid parameter value */
+    PAL_RC_OK,          /*!< Everything is fine. */
+    PAL_RC_NULL_PTR,    /*!< Unexpected NULL pointer. */
+    PAL_RC_IO_ERR,      /*!< Generic I/O error. */
+    PAL_RC_QUEUE_FULL,  /*!< The queue is full. */
+    PAL_RC_QUEUE_EMPTY, /*!< The queue is empty. */
+    PAL_RC_DESER_ERR    /*!< Deserialization error. */
 };
 
 /*!
  * \brief           A structure representing a message.
  */
 struct PalMessage {
-    void *ptr;
-    size_t size; /*!< Data size */
+    uint8_t *ptr; /*!< Pointer to message data. */
+    size_t size;  /*!< The size of the message. */
 };
 
 /*!
  * \brief           Type definition for a function pointer used to deserialize data.
  *
- * \param[in]       input_data: Pointer to the data to be deserialized.
- * \param[out]      out_data: Pointer to the deserialized data.
- * \param[out]      out_data_size: Size of the buffer in bytes.
- * \return          PAL_RC_OK on success, an error code otherwise.
+ * \param[in]       in: Pointer to the data to be deserialized.
+ * \param[out]      out: Pointer to the deserialized data.
+ * \return          PAL_RC_OK on success, PAL_RC_DESER_ERR otherwise.
  */
-typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *input_data, void *out_data);
+typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, void *out);
 
 /*!
  * \brief           A structure that encapsulate data and functions required to
@@ -65,11 +60,8 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *input_
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    RingBufferHandler_t tx_buffer; // Owned by PAL
-    RingBufferHandler_t rx_buffer; // Owned by PAL
-    void (*enter_cs)(void);
-    void (*exit_cs)(void);
-    pal_deserialize_fn deserialize;
+    RingBufferHandler_t rx_queue;   /*!< Ring buffer handler for managing received messages queue. */
+    pal_deserialize_fn deserialize; /*!< Function pointer for deserialize messages. */
 };
 
 #endif /*! PAL_H */

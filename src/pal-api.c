@@ -26,78 +26,47 @@
 #include <stdint.h>
 #include <string.h>
 
-static void prv_pal_api_dummy_fn(void) {
-}
-
-enum PalReturnCode pal_api_init(
-    struct PalHandler *hpal,
-    void (*enter_cs)(void),
-    void (*exit_cs)(void),
-    pal_deserialize_fn deserialize,
-    size_t rx_buffer_size,
-    size_t tx_buffer_size,
-    ArenaAllocatorHandler_t *arena) {
-    if (hpal == NULL)
+enum PalReturnCode pal_api_init(struct PalHandler *hpal,
+                                size_t rx_capacity,
+                                pal_deserialize_fn deserialize,
+                                void (*cs_enter)(void),
+                                void (*cs_exit)(void),
+                                ArenaAllocatorHandler_t *arena) {
+    if (!hpal || !deserialize)
         return PAL_RC_NULL_PTR;
 
-    if (hpal->deserialize == NULL) {
-        return PAL_RC_NULL_PTR;
-    }
-
-    if (rx_buffer_size == 0 || tx_buffer_size == 0) {
-        return PAL_RC_INVALID_PARAM;
-    }
-
-    hpal->enter_cs = enter_cs == NULL ? prv_pal_api_dummy_fn : enter_cs;
-    hpal->exit_cs = exit_cs == NULL ? prv_pal_api_dummy_fn : exit_cs;
     hpal->deserialize = deserialize;
-
-    RingBufferReturnCode res = ring_buffer_api_init(&hpal->tx_buffer, sizeof(struct PalMessage), tx_buffer_size, hpal->enter_cs, hpal->exit_cs, arena);
-    if (res != RING_BUFFER_OK)
-        return PAL_RC_NULL_PTR;
-
-    res = ring_buffer_api_init(&hpal->rx_buffer, sizeof(struct PalMessage), rx_buffer_size, hpal->enter_cs, hpal->exit_cs, arena);
-    if (res != RING_BUFFER_OK)
-        return PAL_RC_NULL_PTR;
+    ring_buffer_api_init(&hpal->rx_queue, sizeof(void *), rx_capacity, cs_enter, cs_exit, arena);
 
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_add_rx(struct PalHandler *hpal, uint8_t *raw_data, size_t size) {
-    if (hpal == NULL)
+enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, size_t size) {
+    if (!hpal || !buff)
         return PAL_RC_NULL_PTR;
 
-    if (ring_buffer_api_is_full(&hpal->rx_buffer))
-        return PAL_RC_BUFF_FULL;
+    if (ring_buffer_api_is_full(&hpal->rx_queue))
+        return PAL_RC_QUEUE_FULL;
 
-    struct PalMessage msg = {
-        .size = size,
-        .ptr = raw_data,
-    };
-
-    RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_buffer, &msg);
-    if (res != RING_BUFFER_OK) {
+    struct PalMessage msg = { buff, size };
+    RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_queue, &msg);
+    if (res != RING_BUFFER_OK)
         return PAL_RC_IO_ERR;
-    }
 
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void *destination) {
-    if (hpal == NULL) {
+enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void *out) {
+    if (!hpal || !out)
         return PAL_RC_NULL_PTR;
-    }
-    if (ring_buffer_api_is_empty(&hpal->rx_buffer)) {
-        return PAL_RC_BUFF_EMPTY;
-    }
+
+    if (ring_buffer_api_is_empty(&hpal->rx_queue))
+        return PAL_RC_QUEUE_EMPTY;
+
     struct PalMessage msg = { 0 };
-    RingBufferReturnCode res_buff = ring_buffer_api_pop_front(&hpal->rx_buffer, &msg);
-    if (res_buff != RING_BUFFER_OK) {
+    RingBufferReturnCode res_buff = ring_buffer_api_pop_front(&hpal->rx_queue, &msg);
+    if (res_buff != RING_BUFFER_OK)
         return PAL_RC_IO_ERR;
-    }
-    enum PalReturnCode res = hpal->deserialize(&msg, destination);
-    if (res != PAL_RC_OK) {
-        return PAL_RC_DESR_ERR;
-    }
-    return PAL_RC_OK;
+
+    return hpal->deserialize(&msg, out);
 }
