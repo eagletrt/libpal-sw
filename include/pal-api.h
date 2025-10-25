@@ -34,7 +34,7 @@
  *                   - PAL_RC_NULL_PTR  if `hpal` or `deserialize` is NULL.
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
-                                size_t tx_capacity,
+                                size_t rx_capacity,
                                 pal_deserialize_fn serialize,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
@@ -51,7 +51,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  *                   - PAL_RC_QUEUE_FULL if the reception queue is full;
  *                   - PAL_RC_IO_ERR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, size_t size);
+enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, void *buff, size_t size);
 
 /*!
  * \brief           Pop the first message and exec the deserialization.
