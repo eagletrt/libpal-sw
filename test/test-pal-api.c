@@ -30,48 +30,42 @@
 ArenaAllocatorHandler_t harena;
 struct PalHandler hpal;
 
-int send_default(const uint8_t *buff, size_t size) {
+enum PalReturnCode send_default(const uint8_t *buff, size_t size) {
     if (!buff)
-        return -1;
+        return PAL_RC_NULL_PTR;
 
     (void)buff;
     (void)size;
 
-    return 0;
+    return PAL_RC_OK;
 }
 
-int send_error(const uint8_t *buff, size_t size) {
+enum PalReturnCode send_error(const uint8_t *buff, size_t size) {
     if (!buff)
-        return -1;
+        return PAL_RC_NULL_PTR;
 
     (void)buff;
     (void)size;
 
-    return -1;
+    return PAL_RC_IO_ERR;
 }
 
-int serialize_default(const void *in, uint8_t *out, size_t size) {
-    if (!in || !out)
-        return -1;
-
-    (void)in;
-    (void)size;
-
-    if (!size)
-        return 0;
-
-    out[0] = 0xFF;
-    return 0;
-}
-
-int serialize_error(const void *in, uint8_t *out, size_t size) {
+enum PalReturnCode serialize_default(const void *in, uint8_t *out, size_t size) {
     if (!in || !out)
         return -1;
 
     (void)in;
     (void)size;
     (void)out;
-    return -1;
+
+    return PAL_RC_OK;
+}
+
+enum PalReturnCode serialize_error(const void *in, uint8_t *out, size_t size) {
+    (void)in;
+    (void)size;
+    (void)out;
+    return PAL_RC_SER_ERR;
 }
 
 void setUp() {
