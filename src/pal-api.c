@@ -32,7 +32,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
                                 ArenaAllocatorHandler_t *arena) {
-    if (!hpal || !deserialize)
+    if (!hpal || !deserialize || !arena)
         return PAL_RC_NULL_PTR;
 
     hpal->deserialize = deserialize;
@@ -56,7 +56,7 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_get_rx(struct PalHandler *hpal, void *out) {
+enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out) {
     if (!hpal || !out)
         return PAL_RC_NULL_PTR;
 

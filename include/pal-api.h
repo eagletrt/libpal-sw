@@ -22,6 +22,9 @@
 #include "pal.h"
 #include "arena-allocator.h"
 
+#include <stddef.h>
+#include <stdint.h>
+
 /*!
  * \brief           Initialize the P.A.L. handler.
  * 
@@ -51,7 +54,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  *                   - PAL_RC_QUEUE_FULL if the reception queue is full;
  *                   - PAL_RC_IO_ERR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, void *buff, size_t size);
+enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, size_t size);
 
 /*!
  * \brief           Pop the first message and exec the deserialization.
