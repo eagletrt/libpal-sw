@@ -63,7 +63,8 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data);
  * \return          PAL_RC_OK on success, an error otherwise:
  *                   - PAL_RC_NULL_PTR if `hpal` or `buff` is NULL;
  *                   - PAL_RC_QUEUE_EMPTY if the transmission queue is full;
- *                   - PAL_RC_IO_ERR if the "pop-front" operation or serialization fails.
+ *                   - PAL_RC_IO_ERR if the "pop-front" operation.
+ *                   - PAL_RC_SER_ERRR if the serialization fails.
  */
 enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal, uint8_t *buff, size_t size);
 

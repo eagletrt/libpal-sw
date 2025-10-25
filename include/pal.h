@@ -28,11 +28,12 @@
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,         /*!< Everything is fine. */
-    PAL_RC_NULL_PTR,   /*!< Unexpected NULL pointer. */
-    PAL_RC_IO_ERR,     /*!< Generic I/O error. */
-    PAL_RC_QUEUE_FULL, /*!< The queue is full. */
-    PAL_RC_QUEUE_EMPTY /*!< The queue is empty. */
+    PAL_RC_OK,          /*!< Everything is fine. */
+    PAL_RC_NULL_PTR,    /*!< Unexpected NULL pointer. */
+    PAL_RC_IO_ERR,      /*!< Generic I/O error. */
+    PAL_RC_QUEUE_FULL,  /*!< The queue is full. */
+    PAL_RC_QUEUE_EMPTY, /*!< The queue is empty. */
+    PAL_RC_SER_ERR      /*!< Serialization error. */
 };
 
 /*!
@@ -40,9 +41,11 @@ enum PalReturnCode {
  *
  * \param[in]       buff: Pointer to the data to be sent.
  * \param[in]       size: Size of the data buffer in bytes.
- * \return          0 on success, -1 otherwise.
+ * \return          PAL_RC_ON on success, an error code otherwise:
+ *                   - PAL_RC_NULL_PTR if `buff` is NULL;
+ *                   - PAL_RC_IO_ERR if fails.
  */
-typedef int (*pal_send_fn)(const uint8_t *buff, size_t size);
+typedef enum PalReturnCode (*pal_send_fn)(const uint8_t *buff, size_t size);
 
 /*!
  * \brief           Type definition for a function pointer used to serialize data.
@@ -50,9 +53,11 @@ typedef int (*pal_send_fn)(const uint8_t *buff, size_t size);
  * \param[in]       in: A pointer to the structure to serialize.
  * \param[out]      out: A pointer to the serialized data.
  * \param[in]       size: Size of the buffer in bytes.
- * \return          The number of bytes received on success, -1 otherwise.
+ * \return          PAL_RC_OK on success, an error code otherwise:
+ *                   - PAL_RC_NULL_PTR if `in` or `out` is null;
+ *                   - PAL_RC_SER_ERR if fails.
  */
-typedef int (*pal_serialize_fn)(const void *in, uint8_t *out, size_t size);
+typedef enum PalReturnCode (*pal_serialize_fn)(const void *in, uint8_t *out, size_t size);
 
 /*!
  * \brief           A structure that encapsulate data and functions required to

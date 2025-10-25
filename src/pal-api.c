@@ -33,7 +33,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
                                 ArenaAllocatorHandler_t *arena) {
-    if (!hpal || !send || !serialize)
+    if (!hpal || !send || !serialize || !arena)
         return PAL_RC_NULL_PTR;
 
     hpal->send = send;
@@ -70,10 +70,8 @@ enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal, uint8_t *buff, size_
         return PAL_RC_IO_ERR;
 
     bzero(buff, size);
-    int len = hpal->serialize(data, buff, size);
-    if (len < 0)
+    if (hpal->serialize(data, buff, size) != PAL_RC_OK)
         return PAL_RC_IO_ERR;
 
-    len = hpal->send(buff, size);
-    return len < 0 ? PAL_RC_IO_ERR : PAL_RC_OK;
+    return hpal->send(buff, size);
 }
