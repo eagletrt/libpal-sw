@@ -69,7 +69,7 @@ enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal, uint8_t *buff, size_
     if (res != RING_BUFFER_OK)
         return PAL_RC_IO_ERR;
 
-    bzero(buff, size);
+    memset(buff, 0U, size);
     if (hpal->serialize(data, buff, size) != PAL_RC_OK)
         return PAL_RC_IO_ERR;
 
