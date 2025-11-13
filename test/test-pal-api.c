@@ -138,8 +138,8 @@ void check_pal_api_exec_rx_deserialize_error(void) {
 
     hpal.deserialize = deserialize_error;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point));
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U),"Something went wrong when adding to the rx_queue");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point),"Something went wrong when deserializing the message");
 }
 
 /*!
