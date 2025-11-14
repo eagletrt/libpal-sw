@@ -26,16 +26,20 @@
 #include <stdint.h>
 #include <string.h>
 
+static inline enum PalReturnCode prv_pal_deserialize_dummy(const struct PalMessage *in, void *out) {
+    return !memcpy(out, in->ptr, in->size) ? PAL_RC_DESER_ERR : PAL_RC_OK;
+}
+
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 size_t rx_capacity,
                                 pal_deserialize_fn deserialize,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
                                 ArenaAllocatorHandler_t *arena) {
-    if (!hpal || !deserialize || !arena)
+    if (!hpal || !arena)
         return PAL_RC_NULL_PTR;
 
-    hpal->deserialize = deserialize;
+    hpal->deserialize = !deserialize ? prv_pal_deserialize_dummy : deserialize;
     ring_buffer_api_init(&hpal->rx_queue, sizeof(struct PalMessage), rx_capacity, cs_enter, cs_exit, arena);
 
     return PAL_RC_OK;
