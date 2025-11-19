@@ -100,8 +100,8 @@ void check_pal_api_add_to_rx_queue_full_rx_queue(void) {
     uint8_t buff1[69U];
     uint8_t buff2[96U];
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff1, 69U));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, buff2, 96U));
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff1, 69U),"Incorrectly reporting rx queue as full");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, buff2, 96U),"Adding to rx queue didn't return queue full error");
 }
 
 void check_pal_api_add_to_rx_queue_ok(void) {
@@ -139,7 +139,7 @@ void check_pal_api_exec_rx_deserialize_error(void) {
     hpal.deserialize = deserialize_error;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U),"Something went wrong when adding to the rx_queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point),"Something went wrong when deserializing the message");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point),"Ignored deserialize error");
 }
 
 /*!
