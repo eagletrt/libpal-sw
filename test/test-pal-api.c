@@ -27,20 +27,13 @@
 
 #define TX_CAPACITY (1U)
 #define MSG_MAX_SIZE (100U)
+
 struct Point {
     float x, y;
 };
 
 ArenaAllocatorHandler_t harena;
 struct PalHandler hpal;
-
-enum PalReturnCode deserialize_default(const struct PalMessage *in, void *out) {
-    if (!in || !out)
-        return -1;
-
-    (void)in;
-    return 0;
-}
 
 enum PalReturnCode deserialize_error(const struct PalMessage *in, void *out) {
     (void)in;
@@ -63,19 +56,15 @@ void tearDown() {
  */
 
 void check_pal_api_init_null_pal_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY, MSG_MAX_SIZE, deserialize_default, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, &harena));
 }
 
 void check_pal_api_init_null_arena_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, deserialize_default, NULL, NULL, NULL));
-}
-
-void check_pal_api_init_null_deserialize_function(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, NULL));
 }
 
 void check_pal_api_init_ok(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, deserialize_default, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, &harena));
 }
 
 /*!
@@ -88,8 +77,8 @@ void check_pal_api_init_ok(void) {
  */
 
 void check_pal_api_add_to_rx_queue_null_pal_handler(void) {
-    uint8_t buff[69U];
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_rx_queue(NULL, buff, 69U));
+    uint8_t buff[MSG_MAX_SIZE];
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_rx_queue(NULL, buff, MSG_MAX_SIZE));
 }
 
 void check_pal_api_add_to_rx_queue_null_data(void) {
@@ -97,16 +86,16 @@ void check_pal_api_add_to_rx_queue_null_data(void) {
 }
 
 void check_pal_api_add_to_rx_queue_full_rx_queue(void) {
-    uint8_t buff1[69U];
-    uint8_t buff2[96U];
+    uint8_t buff1[MSG_MAX_SIZE];
+    uint8_t buff2[MSG_MAX_SIZE];
 
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff1, 69U), "Incorrectly reporting rx queue as full");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, buff2, 96U), "Adding to rx queue didn't return queue full error");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff1, MSG_MAX_SIZE), "Incorrectly reporting rx queue as full");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, buff2, MSG_MAX_SIZE), "Adding to rx queue didn't return queue full error");
 }
 
 void check_pal_api_add_to_rx_queue_ok(void) {
-    uint8_t buff[69U];
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U));
+    uint8_t buff[MSG_MAX_SIZE];
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, MSG_MAX_SIZE));
 }
 
 /*!
@@ -133,12 +122,12 @@ void check_pal_api_exec_rx_queue_empty(void) {
 }
 
 void check_pal_api_exec_rx_deserialize_error(void) {
-    uint8_t buff[69U];
+    uint8_t buff[MSG_MAX_SIZE];
     struct Point point = { 0 };
 
     hpal.deserialize = deserialize_error;
 
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U), "Something went wrong when adding to the rx_queue");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, MSG_MAX_SIZE), "Something went wrong when adding to the rx_queue");
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point), "Ignored deserialize error");
 }
 
@@ -174,7 +163,6 @@ int main(void) {
 
     RUN_TEST(check_pal_api_init_null_pal_handler);
     RUN_TEST(check_pal_api_init_null_arena_handler);
-    RUN_TEST(check_pal_api_init_null_deserialize_function);
 
     /*!
      * @}

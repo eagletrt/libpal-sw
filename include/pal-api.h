@@ -27,7 +27,7 @@
 
 /*!
  * \brief           Initialize the P.A.L. handler.
- * 
+ *
  * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
  * \param[in]       rx_capacity: The capacity of the transmission queue.
  * \param[in]       cs_enter: A pointer to a function that should manage a critical section (can be NULL).
@@ -44,7 +44,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 void (*cs_exit)(void),
                                 ArenaAllocatorHandler_t *arena);
 
-/*! 
+/*!
  * \brief           Add to the reception queue.
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler.
