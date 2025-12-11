@@ -59,6 +59,9 @@ void check_pal_api_init_null_pal_handler(void) {
     TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, &harena));
 }
 
+void check_pal_api_init_message_size_zero(void) {
+    TEST_ASSERT_EQUAL_INT(PAL_RC_INVALID_PARAM, pal_api_init(&hpal, TX_CAPACITY, 0, NULL, NULL, NULL, &harena));
+}
 void check_pal_api_init_null_arena_handler(void) {
     TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, NULL));
 }
@@ -163,6 +166,8 @@ int main(void) {
 
     RUN_TEST(check_pal_api_init_null_pal_handler);
     RUN_TEST(check_pal_api_init_null_arena_handler);
+    RUN_TEST(check_pal_api_init_message_size_zero);
+    RUN_TEST(check_pal_api_init_ok);
 
     /*!
      * @}

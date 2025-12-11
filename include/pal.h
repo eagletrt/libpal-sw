@@ -28,12 +28,13 @@
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,          /*!< Everything is fine. */
-    PAL_RC_NULL_PTR,    /*!< Unexpected NULL pointer. */
-    PAL_RC_IO_ERR,      /*!< Generic I/O error. */
-    PAL_RC_QUEUE_FULL,  /*!< The queue is full. */
-    PAL_RC_QUEUE_EMPTY, /*!< The queue is empty. */
-    PAL_RC_DESER_ERR    /*!< Deserialization error. */
+    PAL_RC_OK,            /*!< Everything is fine. */
+    PAL_RC_INVALID_PARAM, /*!< Invalid parameter data. */
+    PAL_RC_NULL_PTR,      /*!< Unexpected NULL pointer. */
+    PAL_RC_IO_ERR,        /*!< Generic I/O error. */
+    PAL_RC_QUEUE_FULL,    /*!< The queue is full. */
+    PAL_RC_QUEUE_EMPTY,   /*!< The queue is empty. */
+    PAL_RC_DESER_ERR      /*!< Deserialization error. */
 };
 
 /*!
@@ -41,7 +42,7 @@ enum PalReturnCode {
  */
 struct PalMessage {
     size_t size;    /*!< The size of the message. */
-    uint8_t data[]; /*!< Pointer to message data. */
+    uint8_t data[]; /*!< Flexible array member holding the payload (valid bytes = size). */
 };
 
 /*!
