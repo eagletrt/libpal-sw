@@ -26,7 +26,7 @@
 #include <stdint.h>
 
 #define TX_CAPACITY (1U)
-
+#define MSG_MAX_SIZE (100U)
 struct Point {
     float x, y;
 };
@@ -50,7 +50,7 @@ enum PalReturnCode deserialize_error(const struct PalMessage *in, void *out) {
 
 void setUp() {
     arena_allocator_api_init(&harena);
-    pal_api_init(&hpal, TX_CAPACITY, deserialize_default, NULL, NULL, &harena);
+    pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, &harena);
 }
 
 void tearDown() {
@@ -63,19 +63,19 @@ void tearDown() {
  */
 
 void check_pal_api_init_null_pal_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY, deserialize_default, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY, MSG_MAX_SIZE, deserialize_default, NULL, NULL, &harena));
 }
 
 void check_pal_api_init_null_arena_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, deserialize_default, NULL, NULL, NULL));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, deserialize_default, NULL, NULL, NULL));
 }
 
 void check_pal_api_init_null_deserialize_function(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, NULL, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, NULL, NULL, NULL, &harena));
 }
 
 void check_pal_api_init_ok(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, deserialize_default, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, MSG_MAX_SIZE, deserialize_default, NULL, NULL, &harena));
 }
 
 /*!
@@ -100,8 +100,8 @@ void check_pal_api_add_to_rx_queue_full_rx_queue(void) {
     uint8_t buff1[69U];
     uint8_t buff2[96U];
 
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff1, 69U),"Incorrectly reporting rx queue as full");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, buff2, 96U),"Adding to rx queue didn't return queue full error");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff1, 69U), "Incorrectly reporting rx queue as full");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, buff2, 96U), "Adding to rx queue didn't return queue full error");
 }
 
 void check_pal_api_add_to_rx_queue_ok(void) {
@@ -138,14 +138,32 @@ void check_pal_api_exec_rx_deserialize_error(void) {
 
     hpal.deserialize = deserialize_error;
 
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U),"Something went wrong when adding to the rx_queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point),"Ignored deserialize error");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, 69U), "Something went wrong when adding to the rx_queue");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point), "Ignored deserialize error");
 }
 
 /*!
  * @}
  */
 
+/*!
+ * \defgroup            Test P.A.L. message reception
+ * @{
+ */
+void check_pal_api_message_reception(void) {
+    uint8_t in_msg[] = {
+        'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
+    };
+    size_t size = 14;
+    char out_msg[MSG_MAX_SIZE];
+    pal_api_add_to_rx_queue(&hpal, in_msg, size);
+    pal_api_exec_rx(&hpal, out_msg);
+    TEST_ASSERT_EQUAL_STRING(in_msg, out_msg);
+}
+
+/*!
+ * @}
+ */
 int main(void) {
     UNITY_BEGIN();
 
@@ -186,6 +204,15 @@ int main(void) {
     RUN_TEST(check_pal_api_exec_rx_queue_empty);
     RUN_TEST(check_pal_api_exec_rx_deserialize_error);
 
+    /*!
+     * @}
+     */
+
+    /*!
+     * \defgroup            Test P.A.L. message reception
+     * @{
+     */
+    RUN_TEST(check_pal_api_message_reception);
     /*!
      * @}
      */

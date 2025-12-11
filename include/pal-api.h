@@ -38,6 +38,7 @@
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 size_t rx_capacity,
+                                size_t max_msg_size,
                                 pal_deserialize_fn serialize,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),

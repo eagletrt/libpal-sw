@@ -40,8 +40,8 @@ enum PalReturnCode {
  * \brief           A structure representing a message.
  */
 struct PalMessage {
-    uint8_t *ptr; /*!< Pointer to message data. */
-    size_t size;  /*!< The size of the message. */
+    size_t size;    /*!< The size of the message. */
+    uint8_t data[]; /*!< Pointer to message data. */
 };
 
 /*!
@@ -62,6 +62,9 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, vo
 struct PalHandler {
     RingBufferHandler_t rx_queue;   /*!< Ring buffer handler for managing received messages queue. */
     pal_deserialize_fn deserialize; /*!< Function pointer for deserialize messages. */
+    uint8_t *add_to_rx_msg;
+    uint8_t *exec_rx_msg;
+    size_t max_msg_size;
 };
 
 #endif /*! PAL_H */
