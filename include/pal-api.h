@@ -37,8 +37,8 @@
  * \retval          PAL_RC_INVALID_PARAM if `tx_capacity` or `max_msg_size` are invalid.
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
-                                size_t tx_capacity,
-                                size_t max_msg_size,
+                                uint32_t tx_capacity,
+                                uint32_t max_msg_size,
                                 pal_send_fn send,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
@@ -57,7 +57,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  * \retval          PAL_RC_QUEUE_FULL if the transmission queue is full;
  * \retval          PAL_RC_IO_ERR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data,size_t size);
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data,uint32_t size);
 
 /*!
  * \brief           Execute data transmission for the desired peripheral.

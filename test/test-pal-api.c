@@ -197,7 +197,7 @@ void check_pal_api_message_transmission(void) {
     uint8_t in_msg[] = {
         'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
     };
-    size_t size = 14;
+    uint32_t size = 14;
     pal_api_add_to_tx_queue(&hpal, in_msg, size);
     pal_api_exec_tx(&hpal);
     TEST_ASSERT_EQUAL_STRING(in_msg, out_msg_buff);
