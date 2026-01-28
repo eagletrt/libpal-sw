@@ -28,36 +28,34 @@
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,          /*!< Everything is fine. */
-    PAL_RC_NULL_PTR,    /*!< Unexpected NULL pointer. */
-    PAL_RC_IO_ERR,      /*!< Generic I/O error. */
-    PAL_RC_QUEUE_FULL,  /*!< The queue is full. */
-    PAL_RC_QUEUE_EMPTY, /*!< The queue is empty. */
-    PAL_RC_SER_ERR      /*!< Serialization error. */
+    PAL_RC_OK,            /*!< Everything is fine. */
+    PAL_RC_INVALID_PARAM, /*!< Invalid parameter data. */
+    PAL_RC_NULL_PTR,      /*!< Unexpected NULL pointer. */
+    PAL_RC_IO_ERR,        /*!< Generic I/O error. */
+    PAL_RC_QUEUE_FULL,    /*!< The queue is full. */
+    PAL_RC_QUEUE_EMPTY,   /*!< The queue is empty. */
+    PAL_RC_MSG_TOO_BIG,
+    PAL_RC_SERIALIZATION_ERR      /*!< Serialization error. */
+};
+
+/*!
+ * \brief           A structure representing a message.
+ */
+struct PalMessage {
+    size_t size;    /*!< The size of the message. */
+    uint8_t data[]; /*!< Flexible array member holding the payload (valid bytes = size). */
 };
 
 /*!
  * \brief           Type definition for a function pointer used to send data.
  *
- * \param[in]       buff: Pointer to the data to be sent.
- * \param[in]       size: Size of the data buffer in bytes.
- * \return          PAL_RC_ON on success, an error code otherwise:
- *                   - PAL_RC_NULL_PTR if `buff` is NULL;
- *                   - PAL_RC_IO_ERR if fails.
+ * \param[in]       msg: Pointer to the message to be sent.
+ * \retval          PAL_RC_OK on success, an error code otherwise:
+ * \retval          PAL_RC_NULL_PTR if `msg` is NULL;
+ * \retval          PAL_RC_SERIALIZATION_ERR if serialization fails;
+ * \retval          PAL_RC_IO_ERR if fails.
  */
-typedef enum PalReturnCode (*pal_send_fn)(const uint8_t *buff, size_t size);
-
-/*!
- * \brief           Type definition for a function pointer used to serialize data.
- *
- * \param[in]       in: A pointer to the structure to serialize.
- * \param[out]      out: A pointer to the serialized data.
- * \param[in]       size: Size of the buffer in bytes.
- * \return          PAL_RC_OK on success, an error code otherwise:
- *                   - PAL_RC_NULL_PTR if `in` or `out` is null;
- *                   - PAL_RC_SER_ERR if fails.
- */
-typedef enum PalReturnCode (*pal_serialize_fn)(const void *in, uint8_t *out, size_t size);
+typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
 
 /*!
  * \brief           A structure that encapsulate data and functions required to
@@ -66,9 +64,11 @@ typedef enum PalReturnCode (*pal_serialize_fn)(const void *in, uint8_t *out, siz
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
+    size_t max_msg_size;          /*!< Maximum size a message can have */
     pal_send_fn send;             /*!< Function pointer for sending data to the peripheral. */
     RingBufferHandler_t tx_queue; /*!< Ring buffer handler for managing the outgoing data queue. */
-    pal_serialize_fn serialize;   /*!< Function pointer for serializing data before sending. */
+    uint8_t *add_to_tx_msg;       /*!< Pointer to the buffer used in add_to_tx_msg */
+    uint8_t *exec_tx_msg;         /*!< Pointer to the buffer used in exec_tx_msg */
 };
 
 #endif /*! PAL_H */
