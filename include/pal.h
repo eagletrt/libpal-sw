@@ -35,14 +35,14 @@ enum PalReturnCode {
     PAL_RC_QUEUE_FULL,    /*!< The queue is full. */
     PAL_RC_QUEUE_EMPTY,   /*!< The queue is empty. */
     PAL_RC_MSG_TOO_BIG,
-    PAL_RC_SERIALIZATION_ERR      /*!< Serialization error. */
+    PAL_RC_SERIALIZATION_ERR /*!< Serialization error. */
 };
 
 /*!
  * \brief           A structure representing a message.
  */
 struct PalMessage {
-    uint32_t size;    /*!< The size of the message. */
+    uint32_t size;  /*!< The size of the message. */
     uint8_t data[]; /*!< Flexible array member holding the payload (valid bytes = size). */
 };
 
@@ -64,7 +64,7 @@ typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    uint32_t max_msg_size;          /*!< Maximum size a message can have */
+    uint32_t max_msg_size;        /*!< Maximum size a message can have */
     pal_send_fn send;             /*!< Function pointer for sending data to the peripheral. */
     RingBufferHandler_t tx_queue; /*!< Ring buffer handler for managing the outgoing data queue. */
     uint8_t *add_to_tx_msg;       /*!< Pointer to the buffer used in add_to_tx_msg */

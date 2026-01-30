@@ -57,7 +57,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  * \retval          PAL_RC_QUEUE_FULL if the transmission queue is full;
  * \retval          PAL_RC_IO_ERR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data,uint32_t size);
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data, uint32_t size);
 
 /*!
  * \brief           Execute data transmission for the desired peripheral.

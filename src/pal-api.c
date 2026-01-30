@@ -40,14 +40,14 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
         return PAL_RC_INVALID_PARAM;
 
     hpal->send = send;
-    ring_buffer_api_init(&hpal->tx_queue, sizeof(uint32_t) + max_msg_size , tx_capacity, cs_enter, cs_exit, arena);
-    hpal->add_to_tx_msg = (uint8_t *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_msg_size );
-    hpal->exec_tx_msg = (uint8_t *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_msg_size );
+    ring_buffer_api_init(&hpal->tx_queue, sizeof(uint32_t) + max_msg_size, tx_capacity, cs_enter, cs_exit, arena);
+    hpal->add_to_tx_msg = (uint8_t *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_msg_size);
+    hpal->exec_tx_msg = (uint8_t *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_msg_size);
     hpal->max_msg_size = max_msg_size;
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff,uint32_t size) {
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, uint32_t size) {
     if (hpal == NULL || buff == NULL)
         return PAL_RC_NULL_PTR;
 
@@ -65,7 +65,7 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff,u
     RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->tx_queue, hpal->add_to_tx_msg);
     if (res == RING_BUFFER_FULL) {
         return PAL_RC_QUEUE_FULL;
-    } else if (res != RING_BUFFER_OK){
+    } else if (res != RING_BUFFER_OK) {
         return PAL_RC_IO_ERR;
     }
 

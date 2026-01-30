@@ -59,16 +59,16 @@ enum PalReturnCode serialize_error(const struct PalMessage *msg) {
     return PAL_RC_SERIALIZATION_ERR;
 }
 
-enum PalReturnCode send_global_buff(const struct PalMessage *msg){
+enum PalReturnCode send_global_buff(const struct PalMessage *msg) {
     if (msg == NULL)
         return PAL_RC_NULL_PTR;
-    memcpy(out_msg_buff,msg->data,msg->size);
+    memcpy(out_msg_buff, msg->data, msg->size);
     return PAL_RC_OK;
 }
 
 void setUp() {
     arena_allocator_api_init(&harena);
-    pal_api_init(&hpal, TX_CAPACITY,MAX_MSG_SIZE, send_default, NULL, NULL, &harena);
+    pal_api_init(&hpal, TX_CAPACITY, MAX_MSG_SIZE, send_default, NULL, NULL, &harena);
 }
 
 void tearDown() {
@@ -81,23 +81,23 @@ void tearDown() {
  */
 
 void check_pal_api_init_null_pal_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY,MAX_MSG_SIZE, send_default, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(NULL, TX_CAPACITY, MAX_MSG_SIZE, send_default, NULL, NULL, &harena));
 }
 
 void check_pal_api_init_null_arena_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY,MAX_MSG_SIZE, send_default, NULL, NULL, NULL));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, MAX_MSG_SIZE, send_default, NULL, NULL, NULL));
 }
 
 void check_pal_api_init_null_send_function(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY,MAX_MSG_SIZE, NULL, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_init(&hpal, TX_CAPACITY, MAX_MSG_SIZE, NULL, NULL, NULL, &harena));
 }
 
 void check_pal_api_init_message_size_zero(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_INVALID_PARAM, pal_api_init(&hpal, TX_CAPACITY,0, send_default,NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_INVALID_PARAM, pal_api_init(&hpal, TX_CAPACITY, 0, send_default, NULL, NULL, &harena));
 }
 
 void check_pal_api_init_ok(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY,MAX_MSG_SIZE, send_default, NULL, NULL, &harena));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_init(&hpal, TX_CAPACITY, MAX_MSG_SIZE, send_default, NULL, NULL, &harena));
 }
 
 /*!
@@ -111,21 +111,21 @@ void check_pal_api_init_ok(void) {
 
 void check_pal_api_add_to_tx_queue_null_pal_handler(void) {
     uint8_t a = 0;
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(NULL, &a,sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(NULL, &a, sizeof(uint8_t)));
 }
 
 void check_pal_api_add_to_tx_queue_null_data(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(&hpal, NULL,42U));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(&hpal, NULL, 42U));
 }
 
 void check_pal_api_add_to_tx_queue_message_size_zero(void) {
     uint8_t a = 0;
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(NULL, &a,0U));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(NULL, &a, 0U));
 }
 
 void check_pal_api_add_to_tx_queue_message_size_too_big(void) {
     uint8_t a = 0;
-    TEST_ASSERT_EQUAL_INT(PAL_RC_MSG_TOO_BIG, pal_api_add_to_tx_queue(&hpal, &a,MAX_MSG_SIZE+1U));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_MSG_TOO_BIG, pal_api_add_to_tx_queue(&hpal, &a, MAX_MSG_SIZE + 1U));
 }
 
 void check_pal_api_add_to_tx_queue_full_tx_queue(void) {
@@ -133,13 +133,13 @@ void check_pal_api_add_to_tx_queue_full_tx_queue(void) {
     uint8_t a = 1;
     uint8_t b = 2;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a,sizeof(uint8_t)));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b,sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b, sizeof(uint8_t)));
 }
 
 void check_pal_api_add_to_tx_queue_ok(void) {
     uint8_t a = 9;
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a,sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
 }
 
 /*!
@@ -164,7 +164,7 @@ void check_pal_api_exec_tx_serialize_error(void) {
 
     hpal.send = serialize_error;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a,sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
     TEST_ASSERT_EQUAL_INT(PAL_RC_SERIALIZATION_ERR, pal_api_exec_tx(&hpal));
 }
 
@@ -173,14 +173,14 @@ void check_pal_api_exec_tx_send_error(void) {
 
     hpal.send = send_error;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a,sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
     TEST_ASSERT_EQUAL_INT(PAL_RC_IO_ERR, pal_api_exec_tx(&hpal));
 }
 
 void check_pal_api_exec_tx_send_ok(void) {
     uint8_t a = 9;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a,sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
     TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_exec_tx(&hpal));
 }
 
@@ -193,7 +193,7 @@ void check_pal_api_exec_tx_send_ok(void) {
  * @{
  */
 void check_pal_api_message_transmission(void) {
-    pal_api_init(&hpal,TX_CAPACITY,MAX_MSG_SIZE,send_global_buff,NULL,NULL ,&harena);
+    pal_api_init(&hpal, TX_CAPACITY, MAX_MSG_SIZE, send_global_buff, NULL, NULL, &harena);
     uint8_t in_msg[] = {
         'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
     };
