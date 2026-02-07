@@ -28,7 +28,7 @@
 #include <string.h>
 
 static inline enum PalReturnCode prv_pal_deserialize_dummy(const struct PalMessage *in, void *out) {
-    return !memcpy(out, in->data, in->size) ? PAL_RC_DESER_ERR : PAL_RC_OK;
+    return memcpy(out, in->data, in->size) == NULL ? PAL_RC_DESER_ERR : PAL_RC_OK;
 }
 
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
@@ -38,13 +38,13 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
                                 ArenaAllocatorHandler_t *arena) {
-    if (!hpal || !arena) {
+    if (hpal == NULL || arena == NULL) {
         return PAL_RC_NULL_PTR;
     }
     if (max_msg_size <= 0) {
         return PAL_RC_INVALID_PARAM;
     }
-    hpal->deserialize = !deserialize ? prv_pal_deserialize_dummy : deserialize;
+    hpal->deserialize = deserialize == NULL ? prv_pal_deserialize_dummy : deserialize;
     ring_buffer_api_init(&hpal->rx_queue, max_msg_size + sizeof(size_t), rx_capacity, cs_enter, cs_exit, arena);
     hpal->max_msg_size = max_msg_size;
     hpal->add_to_rx_msg = (uint8_t *)arena_allocator_api_alloc(arena, max_msg_size + sizeof(size_t));
@@ -53,7 +53,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
 }
 
 enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, size_t size) {
-    if (!hpal || !buff)
+    if (hpal == NULL || buff == NULL)
         return PAL_RC_NULL_PTR;
 
     if (ring_buffer_api_is_full(&hpal->rx_queue))
@@ -71,7 +71,7 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
 }
 
 enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out) {
-    if (!hpal || !out)
+    if (hpal == NULL || out == NULL)
         return PAL_RC_NULL_PTR;
 
     if (ring_buffer_api_is_empty(&hpal->rx_queue))
