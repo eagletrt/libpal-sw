@@ -38,7 +38,7 @@ struct PalHandler hpal;
 enum PalReturnCode deserialize_error(const struct PalMessage *in, void *out) {
     (void)in;
     (void)out;
-    return PAL_RC_DESER_ERR;
+    return PAL_RC_DESERIALIZATION_ERR;
 }
 
 void setUp() {
@@ -131,7 +131,7 @@ void check_pal_api_exec_rx_deserialize_error(void) {
     hpal.deserialize = deserialize_error;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, MSG_MAX_SIZE), "Something went wrong when adding to the rx_queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESER_ERR, pal_api_exec_rx(&hpal, &point), "Ignored deserialize error");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESERIALIZATION_ERR, pal_api_exec_rx(&hpal, &point), "Ignored deserialize error");
 }
 
 /*!
