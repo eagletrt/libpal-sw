@@ -42,7 +42,7 @@ enum PalReturnCode {
  * \brief           A structure representing a message.
  */
 struct PalMessage {
-    size_t size;    /*!< The size of the message. */
+    uint32_t size;  /*!< The size of the message. */
     uint8_t data[]; /*!< Flexible array member holding the payload (valid bytes = size). */
 };
 
@@ -69,7 +69,7 @@ struct PalHandler {
     pal_deserialize_fn deserialize; /*!< Function pointer for deserialize messages. */
     uint8_t *add_to_rx_msg;         /*!< Pointer to the buffer used in add_to_rx_msg */
     uint8_t *exec_rx_msg;           /*!< Pointer to the buffer used in exec_rx_msg */
-    size_t max_msg_size;            /*!< Maximum size of the message */
+    uint32_t max_msg_size;          /*!< Maximum size of the message */
 };
 
 #endif /*! PAL_H */

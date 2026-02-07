@@ -146,7 +146,7 @@ void check_pal_api_message_reception(void) {
     uint8_t in_msg[] = {
         'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
     };
-    size_t size = 14;
+    uint32_t size = 14;
     char out_msg[MSG_MAX_SIZE];
     pal_api_add_to_rx_queue(&hpal, in_msg, size);
     pal_api_exec_rx(&hpal, out_msg);
