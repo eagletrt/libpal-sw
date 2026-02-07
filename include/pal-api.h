@@ -29,7 +29,9 @@
  * \brief           Initialize the P.A.L. handler.
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
- * \param[in]       rx_capacity: The capacity of the transmission queue.
+ * \param[in]       rx_capacity: Number of elements in the transmission queue.
+ * \param[in]       max_msg_size: Maximum size of the message.
+ * \param[in]       deserialize: A pointer to a function that should deserialize messages.
  * \param[in]       cs_enter: A pointer to a function that should manage a critical section (can be NULL).
  * \param[in]       cs_exit: A pointer to a function that should exit a critical section (can be NULL).
  * \param[out]      arena: A pointer to the arena allocator handler.
@@ -40,7 +42,7 @@
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 uint32_t rx_capacity,
                                 uint32_t max_msg_size,
-                                pal_deserialize_fn serialize,
+                                pal_deserialize_fn deserialize,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
                                 ArenaAllocatorHandler_t *arena);
