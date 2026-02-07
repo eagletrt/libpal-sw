@@ -22,12 +22,13 @@
 #include "arena-allocator-api.h"
 #include "ring-buffer.h"
 #include "ring-buffer-api.h"
+#include "eagletrt.h"
 
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
-static inline enum PalReturnCode prv_pal_deserialize_dummy(const struct PalMessage *in, void *out) {
+EAGLETRT_STATIC_INLINE enum PalReturnCode prv_pal_deserialize_dummy(const struct PalMessage *in, void *out) {
     return memcpy(out, in->data, in->size) == NULL ? PAL_RC_DESERIALIZATION_ERR : PAL_RC_OK;
 }
 
