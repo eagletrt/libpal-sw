@@ -50,7 +50,10 @@ struct PalMessage {
  *
  * \param[in]       in: Pointer to the data to be deserialized.
  * \param[out]      out: Pointer to the deserialized data.
- * \return          PAL_RC_OK on success, PAL_RC_DESER_ERR otherwise.
+ * \retval          PAL_RC_OK on success,
+ * \retval          PAL_RC_DESERIALIZATION_ERR if deserialization fails.
+ * \retval          PAL_RC_NULL_PTR if `in` or `out` is NULL
+ * \retval          PAL_RC_IO_ERR otherwise.
  */
 typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, void *out);
 
@@ -63,9 +66,9 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, vo
 struct PalHandler {
     RingBufferHandler_t rx_queue;   /*!< Ring buffer handler for managing received messages queue. */
     pal_deserialize_fn deserialize; /*!< Function pointer for deserialize messages. */
-    uint8_t *add_to_rx_msg;
-    uint8_t *exec_rx_msg;
-    size_t max_msg_size;
+    uint8_t *add_to_rx_msg;         /*!< Pointer to the buffer used in add_to_rx_msg */
+    uint8_t *exec_rx_msg;           /*!< Pointer to the buffer used in exec_rx_msg */
+    size_t max_msg_size;            /*!< Maximum size of the message */
 };
 
 #endif /*! PAL_H */
