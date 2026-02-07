@@ -34,6 +34,7 @@ enum PalReturnCode {
     PAL_RC_IO_ERR,             /*!< Generic I/O error. */
     PAL_RC_QUEUE_FULL,         /*!< The queue is full. */
     PAL_RC_QUEUE_EMPTY,        /*!< The queue is empty. */
+    PAL_RC_MSG_TOO_BIG,        /*!< Message size is too big. */
     PAL_RC_DESERIALIZATION_ERR /*!< Deserialization error. */
 };
 

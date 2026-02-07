@@ -60,6 +60,12 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
     if (ring_buffer_api_is_full(&hpal->rx_queue))
         return PAL_RC_QUEUE_FULL;
 
+    if (size <= 0)
+        return PAL_RC_INVALID_PARAM;
+
+    if (size > hpal->max_msg_size)
+        return PAL_RC_MSG_TOO_BIG;
+
     memcpy(hpal->add_to_rx_msg, &size, sizeof(size_t));
     memcpy((uint8_t *)hpal->add_to_rx_msg + sizeof(size_t), buff, size);
     RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_queue, hpal->add_to_rx_msg);
