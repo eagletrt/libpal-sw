@@ -133,8 +133,8 @@ void check_pal_api_add_to_tx_queue_full_tx_queue(void) {
     uint8_t a = 1;
     uint8_t b = 2;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b, sizeof(uint8_t)));
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue but queue should not be full");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b, sizeof(uint8_t)), "Added to queue but it should be full");
 }
 
 void check_pal_api_add_to_tx_queue_ok(void) {
@@ -164,8 +164,8 @@ void check_pal_api_exec_tx_serialize_error(void) {
 
     hpal.send = serialize_error;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_SERIALIZATION_ERR, pal_api_exec_tx(&hpal));
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_SERIALIZATION_ERR, pal_api_exec_tx(&hpal), "Serialization succeeded but serialization should fail");
 }
 
 void check_pal_api_exec_tx_send_error(void) {
@@ -173,15 +173,15 @@ void check_pal_api_exec_tx_send_error(void) {
 
     hpal.send = send_error;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_IO_ERR, pal_api_exec_tx(&hpal));
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_IO_ERR, pal_api_exec_tx(&hpal), "Send succeeded but send should fail");
 }
 
 void check_pal_api_exec_tx_send_ok(void) {
     uint8_t a = 9;
 
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)));
-    TEST_ASSERT_EQUAL_INT(PAL_RC_OK, pal_api_exec_tx(&hpal));
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_exec_tx(&hpal), "Send failed but send should succeed");
 }
 
 /*!
