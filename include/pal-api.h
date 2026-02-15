@@ -75,7 +75,7 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
  * \retval          PAL_RC_NULL_PTR if `hpal` or `out` is NULL;
  * \retval          PAL_RC_QUEUE_EMPTY if the reception queue is empty;
  * \retval          PAL_RC_IO_ERR if the "pop-front" operation fails;
- * \retval          PAL_RC_DESER_ERR if the deserialization fails.
+ * \retval          PAL_RC_DESERIALIZATION_ERR if the deserialization fails.
  */
 enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out);
 
