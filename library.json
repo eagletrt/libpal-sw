@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
-  "name": "PAL",
+  "name": "libpal",
   "version": "0.1.0",
-  "description": "Peripheral Abstraction Layer (PAL) library, suited for all embedded devices ",
+  "description": "Peripheral Abstraction Layer (PAL) library, suited for all embedded devices",
   "keywords": ["Abstraction", "CAN", "Peripheral"],
   "repository": {
     "type": "git",
@@ -35,12 +35,16 @@
     },
     {
       "name": "RingBuffer",
-      "version": "https://github.com/eagletrt/libring-buffer-sw.git"
+      "version": "https://github.com/eagletrt/libring-buffer-sw.git#v0.1.0"
+    },
+    {
+      "name": "libeagletrt",
+      "version": "https://github.com/eagletrt/libeagletrt-sw.git#v0.1.0"
     }
   ],
   "headers": [
-    "pal.h",
-    "pal-api.h"
+      "pal.h",
+      "pal-api.h"
   ],
   "examples": [],
   "export": {

@@ -1,39 +1,55 @@
-# LIBSTM32-SW-TEMPLATE
+# Peripheral Abstraction Layer (P.A.L.)
+PAL is a library designed to abstract communication protocol handling for embedded projects. It provides a unified interface for managing data reception and transmission.
 
-This repository serves as a template for libraries compatible with the
-[PlatformIO ecosystem](https://docs.platformio.org/en/latest/librarymanager/creating.html).
+The library does not operate independently; it requires a software layer to interact with the underlying hardware, which will henceforth be referred to as the "driver." Drivers must implement low-level operations such as transmission, reception, serialization, and critical section control, while application logic interacts with a simple API.
 
-## Usage
+## Dependencies
+PAL depends on [ArenaAllocator](https://github.com/eagletrt/libarena-allocator-sw.git) for memory management.
+Ensure that you initialize the allocator handler before initializing the PAL handler.
 
-Before starting to develop the library, a couple of things need to be done:
-1. Change this README explaining the library and the functionalities that it offers
-2. Modify the `library.json` including:
-    - The **name** of the library
-    - The library **version**
-    - The **description** explaining what the library does and for which devices
-    - The list of **keywords**
-    - The repository **url** (and type if necessary)
-    - The list of **authors**
-    - The supported **frameworks** and **platforms** (if needed)
-    - The list of **header files** of the library
-    - The list of **examples**
-    - The file of the library to **export** (if needed)
+Additionally, it requires [RingBuffer](https://github.com/eagletrt/libring-buffer-sw/tree/dev) for internal buffer management.
 
-## Structure
+## Application Usage
+### Initialization
+To use PAL,first declare an handler using `PalHandler`.
+In order to initialize it, the following need to be provided:
+- `rx_queue` capacity
+- Deserialize function
+- Functions to enter and exit critical section (can be null)
+- Arena allocator
 
-The code of the library should be splitted in sources which must be placed inside
-the `src` folder and headers which must be placed inside the `include` folder.
+For example:
+```c
+#define RX_CAPACITY (10U)
+PalHandler hcan;
+PalHandler hspi;
+ArenaAllocatorHandler_t arena;
 
-Inside the `example` folder multiple source files should be placed to further
-explain how to use the library and how it works in different scenario.
+enum PalReturnCode deserialize_default(const struct PalMessage *in, void *out) {
+    if (!in || !out)
+        return -1;
 
-The library must be tested with the maximum possible code coverage, the source
-code used to run the unit tests should be put inside the `test` folder.
+    (void)in;
+    return 0;
+}
 
-If scripts or other tools are needed for the library they must be put inside
-the `tools` folder.
+arena_allocator_api_init(&arena);
+pal_api_init(&hcan, RX_CAPACITY, deserialize_default, NULL, NULL, &arena);
+pal_api_init(&hspi, RX_CAPACITY, deserialize_default, cs_enter, cs_exit, &arena);
 
-No other folders should be created besides the ones described before if not
-necessary, to handle complex file structures nested folders can be used.
+```
+> [!NOTE]
+> `NULL` can be passed in place of the `cs_enter` and `cs_exit` functions, in that case
+> communications done throught that handle are not guaranteed to always work in case of interrupts, an example implementation can be found in [RingBuffer's README](https://github.com/eagletrt/libring-buffer-sw)
 
-For more info check the READMEs inside the corresponding folders.
+### Reception
+After initial setup `pal_api_exec_rx` can be executed in a loop to process the messages in queue one at a time.
+
+## Driver Setup
+Drivers must provide:
+- In ISR or receive callback: call pal_api_add_to_rx_queue.
+- Low-level transmit, serialization and deserialization functions.
+
+## Examples
+
+For more info check the [examples](./examples/) folder.
