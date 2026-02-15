@@ -28,14 +28,15 @@
  * \brief           Enumeration with all possible return codes of the library.
  */
 enum PalReturnCode {
-    PAL_RC_OK,                 /*!< Everything is fine. */
-    PAL_RC_INVALID_PARAM,      /*!< Invalid parameter data. */
-    PAL_RC_NULL_PTR,           /*!< Unexpected NULL pointer. */
-    PAL_RC_IO_ERR,             /*!< Generic I/O error. */
-    PAL_RC_QUEUE_FULL,         /*!< The queue is full. */
-    PAL_RC_QUEUE_EMPTY,        /*!< The queue is empty. */
-    PAL_RC_MSG_TOO_BIG,        /*!< Message size is too big. */
-    PAL_RC_DESERIALIZATION_ERR /*!< Deserialization error. */
+    PAL_RC_OK,                  /*!< Everything is fine. */
+    PAL_RC_INVALID_PARAM,       /*!< Invalid parameter data. */
+    PAL_RC_NULL_PTR,            /*!< Unexpected NULL pointer. */
+    PAL_RC_IO_ERR,              /*!< Generic I/O error. */
+    PAL_RC_QUEUE_FULL,          /*!< The queue is full. */
+    PAL_RC_QUEUE_EMPTY,         /*!< The queue is empty. */
+    PAL_RC_MSG_TOO_BIG,         /*!< Message size is too big. */
+    PAL_RC_DESERIALIZATION_ERR, /*!< Deserialization error. */
+    PAL_RC_SERIALIZATION_ERR    /*!< Serialization error. */
 };
 
 /*!
@@ -59,6 +60,17 @@ struct PalMessage {
 typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, void *out);
 
 /*!
+ * \brief           Type definition for a function pointer used to send data.
+ *
+ * \param[in]       msg: Pointer to the message to be sent.
+ * \retval          PAL_RC_OK on success, an error code otherwise:
+ * \retval          PAL_RC_NULL_PTR if `msg` is NULL;
+ * \retval          PAL_RC_SERIALIZATION_ERR if serialization fails;
+ * \retval          PAL_RC_IO_ERR if fails.
+ */
+typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
+
+/*!
  * \brief           A structure that encapsulate data and functions required to
  *                  handle the communication with the desired peripheral.
  *
@@ -66,10 +78,14 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, vo
  */
 struct PalHandler {
     RingBufferHandler_t rx_queue;   /*!< Ring buffer handler for managing received messages queue. */
+    RingBufferHandler_t tx_queue;   /*!< Ring buffer handler for managing the outgoing data queue. */
     pal_deserialize_fn deserialize; /*!< Function pointer for deserialize messages. */
+    pal_send_fn send;               /*!< Function pointer for sending data to the peripheral. */
+    uint32_t max_msg_size;          /*!< Maximum size of the message */
     uint8_t *add_to_rx_msg;         /*!< Pointer to the buffer used in add_to_rx_msg */
     uint8_t *exec_rx_msg;           /*!< Pointer to the buffer used in exec_rx_msg */
-    uint32_t max_msg_size;          /*!< Maximum size of the message */
+    uint8_t *add_to_tx_msg;         /*!< Pointer to the buffer used in add_to_tx_msg */
+    uint8_t *exec_tx_msg;           /*!< Pointer to the buffer used in exec_tx_msg */
 };
 
 #endif /*! PAL_H */

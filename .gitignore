@@ -417,6 +417,9 @@ STM32Make.make
 .idea/**
 # jetbrains IDEs
 
+### Doxygen ###
+docs/
+
 ### LOCAL IGNORE ###
 #in case git exclude is not used
 .local_gitignore
