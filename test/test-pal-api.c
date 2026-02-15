@@ -128,6 +128,16 @@ void check_pal_api_add_to_rx_queue_null_data(void) {
     TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_rx_queue(&hpal, NULL, 0U));
 }
 
+void check_pal_api_add_to_rx_queue_message_size_zero(void) {
+    uint8_t buff[MSG_MAX_SIZE];
+    TEST_ASSERT_EQUAL_INT(PAL_RC_INVALID_PARAM, pal_api_add_to_rx_queue(&hpal, buff, 0U));
+}
+
+void check_pal_api_add_to_rx_queue_message_size_too_big(void) {
+    uint8_t buff[MSG_MAX_SIZE];
+    TEST_ASSERT_EQUAL_INT(PAL_RC_MSG_TOO_BIG, pal_api_add_to_rx_queue(&hpal, buff, MSG_MAX_SIZE + 1U));
+}
+
 void check_pal_api_add_to_rx_queue_full_rx_queue(void) {
     uint8_t buff1[MSG_MAX_SIZE];
     uint8_t buff2[MSG_MAX_SIZE];
@@ -161,7 +171,7 @@ void check_pal_api_add_to_tx_queue_null_data(void) {
 
 void check_pal_api_add_to_tx_queue_message_size_zero(void) {
     uint8_t a = 0;
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_PTR, pal_api_add_to_tx_queue(NULL, &a, 0U));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_INVALID_PARAM, pal_api_add_to_tx_queue(&hpal, &a, 0U));
 }
 
 void check_pal_api_add_to_tx_queue_message_size_too_big(void) {
@@ -174,8 +184,8 @@ void check_pal_api_add_to_tx_queue_full_tx_queue(void) {
     uint8_t a = 1;
     uint8_t b = 2;
 
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue but queue should not be full");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b, sizeof(uint8_t)), "Added to queue but it should be full");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Incorrectly reporting tx queue as full");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b, sizeof(uint8_t)), "Adding to tx queue didn't return queue full error");
 }
 
 void check_pal_api_add_to_tx_queue_ok(void) {
@@ -327,6 +337,8 @@ int main(void) {
 
     RUN_TEST(check_pal_api_add_to_rx_queue_null_pal_handler);
     RUN_TEST(check_pal_api_add_to_rx_queue_null_data);
+    RUN_TEST(check_pal_api_add_to_rx_queue_message_size_zero);
+    RUN_TEST(check_pal_api_add_to_rx_queue_message_size_too_big);
     RUN_TEST(check_pal_api_add_to_rx_queue_full_rx_queue);
     RUN_TEST(check_pal_api_add_to_rx_queue_ok);
 
