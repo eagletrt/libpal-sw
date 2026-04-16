@@ -13,42 +13,67 @@ Additionally, it requires [RingBuffer](https://github.com/eagletrt/libring-buffe
 ### Initialization
 To use PAL,first declare an handler using `PalHandler`.
 In order to initialize it, the following need to be provided:
-- `rx_queue` capacity
-- Deserialize function
-- Functions to enter and exit critical section (can be null)
-- Arena allocator
+- `rx_capacity`: Number of elements in the reception queue.
+- `tx_capacity`: Number of elements in the transmission queue.
+- `max_msg_size`: Maximum size in bytes of a single message.
+- `deserialize`: Function pointer for data deserialization (can be NULL).
+- `send`: Function pointer for the driver-level transmission.
+- `cs_enter` / `cs_exit`: Functions to manage critical sections (can be NULL).
+- `arena`: A pointer to the initialized Arena Allocator.
 
 For example:
 ```c
 #define RX_CAPACITY (10U)
-PalHandler hcan;
-PalHandler hspi;
+#define TX_CAPACITY (10U)  
+#define CAN_MAX_MSG_SIZE (64U)
+#define UART_MAX_MSG_SIZE (32U)
+struct PalHandler hpal_can;
+struct PalHandler hpal_uart;
 ArenaAllocatorHandler_t arena;
 
-enum PalReturnCode deserialize_default(const struct PalMessage *in, void *out) {
-    if (!in || !out)
-        return -1;
+enum PalReturnCode deserialize_custom(const struct PalMessage *in, void *out) {
+    // deserialization implementation here
+}
 
-    (void)in;
-    return 0;
+// Driver-specific send implementation
+enum PalReturnCode uart_send(const struct PalMessage *msg) {
+    // send implementation here
+}
+
+// Driver-specific send implementation
+enum PalReturnCode can_send(const struct PalMessage *msg) {
+    // send implementation here
 }
 
 arena_allocator_api_init(&arena);
-pal_api_init(&hcan, RX_CAPACITY, deserialize_default, NULL, NULL, &arena);
-pal_api_init(&hspi, RX_CAPACITY, deserialize_default, cs_enter, cs_exit, &arena);
+pal_api_init(&hpal_uart, 10, 10, 64, NULL, uart_send, cs_enter, cs_exit, &arena);
+
+arena_allocator_api_init(&arena);
+pal_api_init(&hpal_can, RX_CAPACITY, TX_CAPACITY, CAN_MAX_MSG_SIZE, NULL, can_send, NULL, NULL, &arena);
+pal_api_init(&hpal_uart, RX_CAPACITY, TX_CAPACITY, UART_MAX_MSG_SIZE, deserialize_custom, uart_send, cs_enter, cs_exit, &arena);
 
 ```
+
 > [!NOTE]
 > `NULL` can be passed in place of the `cs_enter` and `cs_exit` functions, in that case
 > communications done throught that handle are not guaranteed to always work in case of interrupts, an example implementation can be found in [RingBuffer's README](https://github.com/eagletrt/libring-buffer-sw)
 
 ### Reception
-After initial setup `pal_api_exec_rx` can be executed in a loop to process the messages in queue one at a time.
+To process incoming data:
+1. The driver populates the queue (see Driver Setup).
+2. The application calls `pal_api_exec_rx` in a processing loop to pop the first message and execute the deserialization into a provided buffer.
+
+### Transmission
+
+To send data through the peripheral:
+1. Queue Data: Use `pal_api_add_to_tx_queue` to copy structured data into the internal transmission buffer.
+2. Execute Transmission: Call `pal_api_exec_tx` to trigger the send function provided during initialization.
 
 ## Driver Setup
-Drivers must provide:
-- In ISR or receive callback: call pal_api_add_to_rx_queue.
-- Low-level transmit, serialization and deserialization functions.
+Drivers act as the bridge between the hardware and PAL. A driver must:
+- In ISR or receive callback: Capture hardware data and call `pal_api_add_to_rx_queue` to copy raw bytes into the PAL reception queue.
+- Provide a Send Implementation: Implement a function matching the `pal_send_fn` signature that handles the actual hardware-level transmission and/or serialization.
+- Handle Errors: Properly map hardware status codes to the PalReturnCode enumeration.
 
 ## Examples
 
