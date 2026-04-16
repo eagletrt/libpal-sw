@@ -46,9 +46,6 @@ enum PalReturnCode can_send(const struct PalMessage *msg) {
 }
 
 arena_allocator_api_init(&arena);
-pal_api_init(&hpal_uart, 10, 10, 64, NULL, uart_send, cs_enter, cs_exit, &arena);
-
-arena_allocator_api_init(&arena);
 pal_api_init(&hpal_can, RX_CAPACITY, TX_CAPACITY, CAN_MAX_MSG_SIZE, NULL, can_send, NULL, NULL, &arena);
 pal_api_init(&hpal_uart, RX_CAPACITY, TX_CAPACITY, UART_MAX_MSG_SIZE, deserialize_custom, uart_send, cs_enter, cs_exit, &arena);
 
