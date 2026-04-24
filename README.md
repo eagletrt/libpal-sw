@@ -11,7 +11,7 @@ Additionally, it requires [RingBuffer](https://github.com/eagletrt/libring-buffe
 
 ## Application Usage
 ### Initialization
-To use PAL,first declare an handler using `PalHandler`.
+To use PAL,first declare a handler using `PalHandler`.
 In order to initialize it, the following need to be provided:
 - `rx_capacity`: Number of elements in the reception queue.
 - `tx_capacity`: Number of elements in the transmission queue.
@@ -50,10 +50,12 @@ pal_api_init(&hpal_can, RX_CAPACITY, TX_CAPACITY, CAN_MAX_MSG_SIZE, NULL, can_se
 pal_api_init(&hpal_uart, RX_CAPACITY, TX_CAPACITY, UART_MAX_MSG_SIZE, deserialize_custom, uart_send, cs_enter, cs_exit, &arena);
 
 ```
+> [!WARNING]
+> If using the default deserializer, ensure the destination buffer is at least `max_msg_size` to avoid a potential buffer overflow.
 
 > [!NOTE]
 > `NULL` can be passed in place of the `cs_enter` and `cs_exit` functions, in that case
-> communications done throught that handle are not guaranteed to always work in case of interrupts, an example implementation can be found in [RingBuffer's README](https://github.com/eagletrt/libring-buffer-sw)
+> communications done through that handle are not guaranteed to always work in case of interrupts, an example implementation can be found in [RingBuffer's README](https://github.com/eagletrt/libring-buffer-sw)
 
 ### Reception
 To process incoming data:

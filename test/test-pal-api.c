@@ -198,7 +198,6 @@ void check_pal_api_add_to_tx_queue_ok(void) {
  */
 
 /*!
-<<<<<<< HEAD
  * \defgroup            pal_exec_rx Test P.A.L. exec_rx
  * @{
  */
