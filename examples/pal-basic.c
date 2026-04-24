@@ -1,11 +1,11 @@
 /*!
- * \file pal-basic.c
+ * \file            pal-basic.c
  * \date            2026-04-24
- * \authors Mario Mazzara
+ * \authors         Mario Mazzara
  *
- * \brief Basic example of PAL application-level usage.
- * \details Demonstrates how an application initializes PAL (via a driver),
- * queues data for transmission, and processes received data in a main loop.
+ * \brief           Basic example of PAL application-level usage.
+ * \details         Demonstrates how an application initializes PAL (via a driver),
+ *                  queues data for transmission, and processes received data in main.
  */
 
 #include <stdio.h>

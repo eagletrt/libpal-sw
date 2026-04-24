@@ -32,7 +32,7 @@ Illustrates handling of structured data:
 
 ### Compilation:
 
-If PAL has been compiled atleast once in the debug eviroment the examples can be compiled using the following commands:
+If PAL has been compiled at least once in the debug enviroment the examples can be compiled using the following commands:
 > [!NOTE]
 > The following commands assume examples/ to be the working directory
 

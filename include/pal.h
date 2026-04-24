@@ -71,7 +71,7 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, vo
 typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
 
 /*!
- * \brief           A structure that encapsulate data and functions required to
+ * \brief           A structure that encapsulates data and functions required to
  *                  handle the communication with the desired peripheral.
  *
  * \attention       This structure should not be used directly.
@@ -79,7 +79,7 @@ typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
 struct PalHandler {
     struct RingBufferHandler rx_queue; /*!< Ring buffer handler for managing received messages queue. */
     struct RingBufferHandler tx_queue; /*!< Ring buffer handler for managing the outgoing data queue. */
-    pal_deserialize_fn deserialize;    /*!< Function pointer for deserialize messages. */
+    pal_deserialize_fn deserialize;    /*!< Function pointer for deserializing messages. */
     pal_send_fn send;                  /*!< Function pointer for sending data to the peripheral. */
     uint32_t max_msg_size;             /*!< Maximum size of the message */
     uint8_t *add_to_rx_msg;            /*!< Pointer to the buffer used in add_to_rx_msg */

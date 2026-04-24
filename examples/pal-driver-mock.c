@@ -1,11 +1,11 @@
 /*!
- * \file pal-driver-mock.c
+ * \file            pal-driver-mock.c
  * \date            2026-04-24
- * \authors Mario Mazzara
+ * \authors         Mario Mazzara
  *
- * \brief Example of a PAL driver implementation.
- * \details Demonstrates the required hardware-to-PAL mappings, including 
- * the transmission callback and the interrupt service routine (ISR) handler.
+ * \brief           Example of a PAL driver implementation.
+ * \details         Demonstrates the required hardware-to-PAL mappings, including 
+ *                  the transmission callback and the interrupt service routine (ISR) handler.
  */
 
 #include <stdint.h>
@@ -40,9 +40,10 @@ static enum PalReturnCode mock_hw_transmit(const struct PalMessage *msg) {
  */
 void MOCK_HW_IRQHandler(struct PalHandler *hpal) {
     // Simulate reading from a hardware peripheral
-    //const char *simulated_hw_data = "Hardware Reply";
 
-    uint32_t len = strlen((const char *)HW_REGISTER) + 1; //Assumes all messages sent in the example are null terminated strings. In a real project use a serialization protocol that lets you know the size of the data
+    // Assumes all messages sent in the example are null-terminated strings.
+    // In a real project, use a serialization protocol that provides the exact size of the data.
+    uint32_t len = strlen((const char *)HW_REGISTER) + 1;
 
     // Push raw bytes into the PAL queue
     enum PalReturnCode res = pal_api_add_to_rx_queue(hpal, HW_REGISTER, len);

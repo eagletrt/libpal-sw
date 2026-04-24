@@ -29,7 +29,7 @@
  * \brief           Initialize the P.A.L. handler.
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
- * \param[in]       rx_capacity: Number of elements in the transmission queue.
+ * \param[in]       rx_capacity: Number of elements in the reception queue.
  * \param[in]       tx_capacity: The capacity of the transmission queue.
  * \param[in]       max_msg_size: Maximum size of the message.
  * \param[in]       deserialize: A pointer to a function that should deserialize messages.
