@@ -52,7 +52,7 @@ void MOCK_HW_IRQHandler(struct PalHandler *hpal) {
 /**
  * \brief Initializes the PAL handler with driver-specific configurations.
  */
-enum PalReturnCode mock_driver_init(struct PalHandler *hpal, ArenaAllocatorHandler_t *arena) {
+enum PalReturnCode mock_driver_init(struct PalHandler *hpal, struct ArenaAllocatorHandler *arena) {
     // Initialize PAL with the mock_hw_transmit function and default deserializer
     return pal_api_init(
         hpal, 

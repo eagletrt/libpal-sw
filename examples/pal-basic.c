@@ -15,14 +15,14 @@
 #include "pal-driver-mock.c"
 
 // Forward declarations for the mock driver interface
-extern enum PalReturnCode mock_driver_init(struct PalHandler *hpal, ArenaAllocatorHandler_t *arena);
+extern enum PalReturnCode mock_driver_init(struct PalHandler *hpal, struct ArenaAllocatorHandler *arena);
 extern void MOCK_HW_IRQHandler(struct PalHandler *hpal); // Used here purely for simulation
 
 #define MAX_SIZE (64U)
 
 int main(void) {
     struct PalHandler hpal;
-    ArenaAllocatorHandler_t arena;
+    struct ArenaAllocatorHandler arena;
     char rx_buffer[MAX_SIZE];
 
     // Initialize dependencies

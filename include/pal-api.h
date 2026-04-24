@@ -49,7 +49,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 pal_send_fn send,
                                 void (*cs_enter)(void),
                                 void (*cs_exit)(void),
-                                ArenaAllocatorHandler_t *arena);
+                                struct ArenaAllocatorHandler *arena);
 
 /*!
  * \brief           Add to the reception queue.

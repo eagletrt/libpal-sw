@@ -19,11 +19,11 @@
 #define PAYLOAD_MAX_BYTES (MAX_MSG_SIZE - HEADER_SIZE)
 
 // The structured data used by the application
-typedef struct {
+struct ApplicationPacket {
     uint32_t size;                           // Number of valid bytes in the payload
     uint8_t command_id;                      // Command identifier
     uint8_t payload[PAYLOAD_MAX_BYTES];      // Variable length payload
-} ApplicationPacket;
+};
 
 /**
  * \brief Custom deserializer for variable-length binary data.
@@ -32,7 +32,7 @@ enum PalReturnCode custom_deserialize(const struct PalMessage *in, void *out) {
     // Ensure we have at least enough bytes for the header
     if (in->size < HEADER_SIZE) return PAL_RC_DESERIALIZATION_ERR;
     
-    ApplicationPacket *dest = (ApplicationPacket *)out;
+    struct ApplicationPacket *dest = (struct ApplicationPacket *)out;
     const uint8_t *src = in->data;
     
     // Unpack size safely (Little Endian mapping)
@@ -59,7 +59,7 @@ enum PalReturnCode custom_deserialize(const struct PalMessage *in, void *out) {
 /**
  * \brief Serializes the ApplicationPacket into a byte array for transmission.
  */
-enum PalReturnCode serialize_and_send(struct PalHandler *hpal, const ApplicationPacket *pkt) {
+enum PalReturnCode serialize_and_send(struct PalHandler *hpal, const struct ApplicationPacket *pkt) {
     if (pkt->size > PAYLOAD_MAX_BYTES) return PAL_RC_INVALID_PARAM;
     
     uint8_t buffer[MAX_MSG_SIZE];
@@ -84,13 +84,14 @@ enum PalReturnCode serialize_and_send(struct PalHandler *hpal, const Application
 
 // Dummy driver send function for compilation
 enum PalReturnCode dummy_send(const struct PalMessage *msg) {
+    (void) msg;
     return PAL_RC_OK;
 }
 
 int main(void) {
     struct PalHandler hpal;
-    ArenaAllocatorHandler_t arena;
-    ApplicationPacket received_pkt;
+    struct ArenaAllocatorHandler arena;
+    struct ApplicationPacket received_pkt;
 
     arena_allocator_api_init(&arena);
 
@@ -98,7 +99,7 @@ int main(void) {
     pal_api_init(&hpal, 5, 5, MAX_MSG_SIZE, custom_deserialize, dummy_send, NULL, NULL, &arena);
 
     // --- Serialization Phase ---
-    ApplicationPacket pkt_out;
+    struct ApplicationPacket pkt_out;
     pkt_out.command_id = 0x10;
     pkt_out.size = 3; // We only want to send 3 bytes of payload
     pkt_out.payload[0] = 0xAA;

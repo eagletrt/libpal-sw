@@ -36,7 +36,7 @@ struct Point {
     float x, y;
 };
 
-ArenaAllocatorHandler_t harena;
+struct ArenaAllocatorHandler harena;
 struct PalHandler hpal;
 char out_msg_buff[MSG_MAX_SIZE];
 

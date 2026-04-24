@@ -29,7 +29,7 @@ For example:
 #define UART_MAX_MSG_SIZE (32U)
 struct PalHandler hpal_can;
 struct PalHandler hpal_uart;
-ArenaAllocatorHandler_t arena;
+struct ArenaAllocatorHandler arena;
 
 enum PalReturnCode deserialize_custom(const struct PalMessage *in, void *out) {
     // deserialization implementation here
