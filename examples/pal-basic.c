@@ -1,6 +1,6 @@
 /*!
  * \file pal-basic.c
- * \date 2026-04-17
+ * \date            2026-04-24
  * \authors Mario Mazzara
  *
  * \brief Basic example of PAL application-level usage.
@@ -37,11 +37,11 @@ int main(void) {
     // --- Transmission Phase ---
     const char *msg_out = "Hello from Application";
     enum PalReturnCode res_add_tx = pal_api_add_to_tx_queue(&hpal, (void *)msg_out, strlen(msg_out) + 1);
-    if(res_add_tx != PAL_RC_OK){
+    if (res_add_tx != PAL_RC_OK) {
         //handle error
     }
     enum PalReturnCode res_exec_tx = pal_api_exec_tx(&hpal); // Triggers driver's send function
-    if(res_exec_tx != PAL_RC_OK){
+    if (res_exec_tx != PAL_RC_OK) {
         //handle error
     }
 

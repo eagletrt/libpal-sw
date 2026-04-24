@@ -1,6 +1,6 @@
 /*!
  * \file pal-driver-mock.c
- * \date 2026-04-17
+ * \date            2026-04-24
  * \authors Mario Mazzara
  *
  * \brief Example of a PAL driver implementation.
@@ -23,12 +23,14 @@ static uint8_t HW_REGISTER[MOCK_MAX_MSG_SIZE];
  * \brief Hardware-specific transmission logic. In this example it just puts data in an array for the mock_IRQ to read from
  */
 static enum PalReturnCode mock_hw_transmit(const struct PalMessage *msg) {
-    if (msg == NULL) return PAL_RC_NULL_PTR;
-    if (msg->size > MOCK_MAX_MSG_SIZE) return PAL_RC_MSG_TOO_BIG;
+    if (msg == NULL)
+        return PAL_RC_NULL_PTR;
+    if (msg->size > MOCK_MAX_MSG_SIZE)
+        return PAL_RC_MSG_TOO_BIG;
 
     // Simulate pushing data to a hardware peripheral (e.g., UART TX register)
     memcpy(HW_REGISTER, msg->data, msg->size);
-    
+
     return PAL_RC_OK;
 }
 
@@ -44,7 +46,7 @@ void MOCK_HW_IRQHandler(struct PalHandler *hpal) {
 
     // Push raw bytes into the PAL queue
     enum PalReturnCode res = pal_api_add_to_rx_queue(hpal, HW_REGISTER, len);
-    if (res != PAL_RC_OK){
+    if (res != PAL_RC_OK) {
         // handle error
     }
 }
@@ -55,14 +57,13 @@ void MOCK_HW_IRQHandler(struct PalHandler *hpal) {
 enum PalReturnCode mock_driver_init(struct PalHandler *hpal, struct ArenaAllocatorHandler *arena) {
     // Initialize PAL with the mock_hw_transmit function and default deserializer
     return pal_api_init(
-        hpal, 
-        MOCK_RX_CAPACITY, 
-        MOCK_TX_CAPACITY, 
-        MOCK_MAX_MSG_SIZE, 
-        NULL,              // Default memcpy deserializer
-        mock_hw_transmit, 
-        NULL,              // No critical section enter
-        NULL,              // No critical section exit
-        arena
-    );
+        hpal,
+        MOCK_RX_CAPACITY,
+        MOCK_TX_CAPACITY,
+        MOCK_MAX_MSG_SIZE,
+        NULL, // Default memcpy deserializer
+        mock_hw_transmit,
+        NULL, // No critical section enter
+        NULL, // No critical section exit
+        arena);
 }

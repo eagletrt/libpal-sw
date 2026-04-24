@@ -1,6 +1,6 @@
 /*!
  * \file            test-pal-api.c
- * \date            2025-10-24
+ * \date            2026-04-24
  * \authors         Mario Mazzara [mario.mazzara@eagletrt.it]
  *                  Mirko Lana [mirko.lana@eagletrt.it]
  *
