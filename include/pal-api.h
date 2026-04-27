@@ -38,8 +38,8 @@
  * \param[in]       cs_exit: A pointer to a function that should exit a critical section (can be NULL).
  * \param[out]      arena: A pointer to the arena allocator handler.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_PTR  if `hpal`, `send` or `arena` is NULL.
- * \retval          PAL_RC_INVALID_PARAM if `rx_capacity`, `tx_capacity` or `max_msg_size` are invalid.
+ * \retval          PAL_RC_NULL_POINTER  if `hpal`, `send` or `arena` is NULL.
+ * \retval          PAL_RC_INVALID_ARGUMENT if `rx_capacity`, `tx_capacity` or `max_msg_size` are invalid.
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 uint32_t rx_capacity,
@@ -58,11 +58,11 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  * \param[in]       buff: A pointer to the buffer provided by the peripheral.
  * \param[in]       size: The size of `buff` buffer.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_PTR if `hpal` or `buff` is NULL;
- * \retval          PAL_RC_MSG_TOO_BIG if `size` is greater than `max_msg_size`;
- * \retval          PAL_RC_INVALID_PARAM if `size` is invalid;
+ * \retval          PAL_RC_NULL_POINTER if `hpal` or `buff` is NULL;
+ * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_msg_size`;
+ * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
  * \retval          PAL_RC_QUEUE_FULL if the reception queue is full;
- * \retval          PAL_RC_IO_ERR if the "push-back" operation fails.
+ * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
 enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, uint32_t size);
 
@@ -72,10 +72,10 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
  * \param[out]      hpal: A pointer to the P.A.L. handler.
  * \param[out]      out: A pointer to the buffer used to transmit.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_PTR if `hpal` or `out` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `hpal` or `out` is NULL;
  * \retval          PAL_RC_QUEUE_EMPTY if the reception queue is empty;
- * \retval          PAL_RC_IO_ERR if the "pop-front" operation fails;
- * \retval          PAL_RC_DESERIALIZATION_ERR if the deserialization fails.
+ * \retval          PAL_RC_IO_ERROR if the "pop-front" operation fails;
+ * \retval          PAL_RC_DESERIALIZATION_ERROR if the deserialization fails.
  */
 enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out);
 
@@ -86,11 +86,11 @@ enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out);
  * \param[in]       data: A pointer to the structured data.
  * \param[in]       size: Number of bytes of the data.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_PTR if `hpal` or `data` is NULL;
- * \retval          PAL_RC_INVALID_PARAM if `size` is invalid;
- * \retval          PAL_RC_MSG_TOO_BIG if `size` is greater than `max_msg_size`;
+ * \retval          PAL_RC_NULL_POINTER if `hpal` or `data` is NULL;
+ * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
+ * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_msg_size`;
  * \retval          PAL_RC_QUEUE_FULL if the transmission queue is full;
- * \retval          PAL_RC_IO_ERR if the "push-back" operation fails.
+ * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
 enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data, uint32_t size);
 
@@ -99,10 +99,10 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data, 
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_PTR if `hpal` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `hpal` is NULL;
  * \retval          PAL_RC_QUEUE_EMPTY if the transmission queue is empty;
- * \retval          PAL_RC_IO_ERR if the "pop-front" operation fails.
- * \retval          PAL_RC_SERIALIZATION_ERR if the serialization fails.
+ * \retval          PAL_RC_IO_ERROR if the "pop-front" operation fails.
+ * \retval          PAL_RC_SERIALIZATION_ERROR if the serialization fails.
  */
 enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal);
 

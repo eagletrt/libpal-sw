@@ -29,7 +29,7 @@
 #include <string.h>
 
 EAGLETRT_STATIC_INLINE enum PalReturnCode prv_pal_deserialize_dummy(const struct PalMessage *in, void *out) {
-    return memcpy(out, in->payload, in->size) == NULL ? PAL_RC_DESERIALIZATION_ERR : PAL_RC_OK;
+    return memcpy(out, in->payload, in->size) == NULL ? PAL_RC_DESERIALIZATION_ERROR : PAL_RC_OK;
 }
 
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
@@ -42,10 +42,10 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 void (*cs_exit)(void),
                                 struct ArenaAllocatorHandler *arena) {
     if (hpal == NULL || send == NULL || arena == NULL) {
-        return PAL_RC_NULL_PTR;
+        return PAL_RC_NULL_POINTER;
     }
     if (max_msg_size == 0) {
-        return PAL_RC_INVALID_PARAM;
+        return PAL_RC_INVALID_ARGUMENT;
     }
     hpal->deserialize = deserialize == NULL ? prv_pal_deserialize_dummy : deserialize;
     hpal->send = send;
@@ -61,13 +61,13 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
 
 enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, uint32_t size) {
     if (hpal == NULL || buff == NULL)
-        return PAL_RC_NULL_PTR;
+        return PAL_RC_NULL_POINTER;
 
     if (size == 0)
-        return PAL_RC_INVALID_PARAM;
+        return PAL_RC_INVALID_ARGUMENT;
 
     if (size > hpal->max_msg_size)
-        return PAL_RC_MSG_TOO_BIG;
+        return PAL_RC_MESSAGE_TOO_BIG;
 
     if (ring_buffer_api_is_full(&hpal->rx_queue))
         return PAL_RC_QUEUE_FULL;
@@ -78,20 +78,20 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
     if (res == RING_BUFFER_RC_FULL) {
         return PAL_RC_QUEUE_FULL;
     } else if (res != RING_BUFFER_RC_OK) {
-        return PAL_RC_IO_ERR;
+        return PAL_RC_IO_ERROR;
     }
     return PAL_RC_OK;
 }
 
 enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, uint32_t size) {
     if (hpal == NULL || buff == NULL)
-        return PAL_RC_NULL_PTR;
+        return PAL_RC_NULL_POINTER;
 
     if (size == 0)
-        return PAL_RC_INVALID_PARAM;
+        return PAL_RC_INVALID_ARGUMENT;
 
     if (size > hpal->max_msg_size)
-        return PAL_RC_MSG_TOO_BIG;
+        return PAL_RC_MESSAGE_TOO_BIG;
 
     if (ring_buffer_api_is_full(&hpal->tx_queue))
         return PAL_RC_QUEUE_FULL;
@@ -102,14 +102,14 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, 
     if (res == RING_BUFFER_RC_FULL) {
         return PAL_RC_QUEUE_FULL;
     } else if (res != RING_BUFFER_RC_OK) {
-        return PAL_RC_IO_ERR;
+        return PAL_RC_IO_ERROR;
     }
     return PAL_RC_OK;
 }
 
 enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out) {
     if (hpal == NULL || out == NULL)
-        return PAL_RC_NULL_PTR;
+        return PAL_RC_NULL_POINTER;
 
     if (ring_buffer_api_is_empty(&hpal->rx_queue))
         return PAL_RC_QUEUE_EMPTY;
@@ -118,7 +118,7 @@ enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out) {
     if (res == RING_BUFFER_RC_EMPTY) {
         return PAL_RC_QUEUE_EMPTY;
     } else if (res != RING_BUFFER_RC_OK) {
-        return PAL_RC_IO_ERR;
+        return PAL_RC_IO_ERROR;
     }
 
     return hpal->deserialize((struct PalMessage *)hpal->exec_rx_msg, out);
@@ -126,7 +126,7 @@ enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out) {
 
 enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal) {
     if (hpal == NULL)
-        return PAL_RC_NULL_PTR;
+        return PAL_RC_NULL_POINTER;
 
     if (ring_buffer_api_is_empty(&hpal->tx_queue))
         return PAL_RC_QUEUE_EMPTY;
@@ -136,7 +136,7 @@ enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal) {
     if (res == RING_BUFFER_RC_EMPTY) {
         return PAL_RC_QUEUE_EMPTY;
     } else if (res != RING_BUFFER_RC_OK) {
-        return PAL_RC_IO_ERR;
+        return PAL_RC_IO_ERROR;
     }
 
     return hpal->send((struct PalMessage *)hpal->exec_tx_msg);

@@ -31,7 +31,7 @@ struct ApplicationPacket {
 enum PalReturnCode custom_deserialize(const struct PalMessage *in, void *out) {
     // Ensure we have at least enough bytes for the header
     if (in->size < HEADER_SIZE)
-        return PAL_RC_DESERIALIZATION_ERR;
+        return PAL_RC_DESERIALIZATION_ERROR;
 
     struct ApplicationPacket *dest = (struct ApplicationPacket *)out;
     const uint8_t *src = in->payload;
@@ -44,7 +44,7 @@ enum PalReturnCode custom_deserialize(const struct PalMessage *in, void *out) {
 
     // Validate the extracted size
     if (dest->size > PAYLOAD_MAX_BYTES || in->size < (HEADER_SIZE + dest->size)) {
-        return PAL_RC_DESERIALIZATION_ERR;
+        return PAL_RC_DESERIALIZATION_ERROR;
     }
 
     dest->command_id = src[4];
@@ -62,7 +62,7 @@ enum PalReturnCode custom_deserialize(const struct PalMessage *in, void *out) {
  */
 enum PalReturnCode serialize_and_send(struct PalHandler *hpal, const struct ApplicationPacket *pkt) {
     if (pkt->size > PAYLOAD_MAX_BYTES)
-        return PAL_RC_INVALID_PARAM;
+        return PAL_RC_INVALID_ARGUMENT;
 
     uint8_t buffer[MAX_MSG_SIZE];
     uint32_t total_transmission_size = HEADER_SIZE + pkt->size;

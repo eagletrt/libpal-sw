@@ -26,7 +26,7 @@ static enum PalReturnCode mock_hw_transmit(const struct PalMessage *msg) {
     if (msg == NULL)
         return PAL_RC_NULL_PTR;
     if (msg->size > MOCK_MAX_MSG_SIZE)
-        return PAL_RC_MSG_TOO_BIG;
+        return PAL_RC_MESSAGE_TOO_BIG;
 
     // Simulate pushing data to a hardware peripheral (e.g., UART TX register)
     memcpy(HW_REGISTER, msg->payload, msg->size);
