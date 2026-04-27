@@ -16,14 +16,14 @@ Demonstrates the standard application-level workflow:
 
 Provides a template for hardware driver development:
 
-- Mapping hardware transmission logic to the pal_send_fn signature.
-- Bridging hardware interrupts (ISR) to the PAL reception queue using pal_api_add_to_rx_queue.
+- Mapping hardware transmission logic to the `pal_send_callback` signature.
+- Bridging hardware interrupts (ISR) to the PAL reception queue using `pal_api_add_to_rx_queue`.
 
 [pal-custom-protocol.c](./pal-custom-protocol.c)
 
 Illustrates handling of structured data:
 - Manual serialization of C structures into byte arrays for transmission.
-- Implementation of a custom pal_deserialize_fn callback to reconstruct structured data upon reception.
+- Implementation of a custom `pal_deserialize_callback` callback to reconstruct structured data upon reception.
 
 ## Running the examples:
 

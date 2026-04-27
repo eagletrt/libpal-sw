@@ -57,7 +57,7 @@ struct PalMessage {
  * \retval          PAL_RC_NULL_PTR if `in` or `out` is NULL
  * \retval          PAL_RC_IO_ERR otherwise.
  */
-typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, void *out);
+typedef enum PalReturnCode (*pal_deserialize_callback)(const struct PalMessage *in, void *out);
 
 /*!
  * \brief           Type definition for a function pointer used to send data.
@@ -68,7 +68,7 @@ typedef enum PalReturnCode (*pal_deserialize_fn)(const struct PalMessage *in, vo
  * \retval          PAL_RC_SERIALIZATION_ERR if serialization fails;
  * \retval          PAL_RC_IO_ERR if fails.
  */
-typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
+typedef enum PalReturnCode (*pal_send_callback)(const struct PalMessage *msg);
 
 /*!
  * \brief           A structure that encapsulates data and functions required to
@@ -77,15 +77,15 @@ typedef enum PalReturnCode (*pal_send_fn)(const struct PalMessage *msg);
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    struct RingBufferHandler rx_queue; /*!< Ring buffer handler for managing received messages queue. */
-    struct RingBufferHandler tx_queue; /*!< Ring buffer handler for managing the outgoing data queue. */
-    pal_deserialize_fn deserialize;    /*!< Function pointer for deserializing messages. */
-    pal_send_fn send;                  /*!< Function pointer for sending data to the peripheral. */
-    uint32_t max_msg_size;             /*!< Maximum size of the message */
-    uint8_t *add_to_rx_msg;            /*!< Pointer to the buffer used in add_to_rx_msg */
-    uint8_t *exec_rx_msg;              /*!< Pointer to the buffer used in exec_rx_msg */
-    uint8_t *add_to_tx_msg;            /*!< Pointer to the buffer used in add_to_tx_msg */
-    uint8_t *exec_tx_msg;              /*!< Pointer to the buffer used in exec_tx_msg */
+    struct RingBufferHandler rx_queue;    /*!< Ring buffer handler for managing received messages queue. */
+    struct RingBufferHandler tx_queue;    /*!< Ring buffer handler for managing the outgoing data queue. */
+    pal_deserialize_callback deserialize; /*!< Function pointer for deserializing messages. */
+    pal_send_callback send;               /*!< Function pointer for sending data to the peripheral. */
+    uint32_t max_msg_size;                /*!< Maximum size of the message */
+    uint8_t *add_to_rx_msg;               /*!< Pointer to the buffer used in add_to_rx_msg */
+    uint8_t *exec_rx_msg;                 /*!< Pointer to the buffer used in exec_rx_msg */
+    uint8_t *add_to_tx_msg;               /*!< Pointer to the buffer used in add_to_tx_msg */
+    uint8_t *exec_tx_msg;                 /*!< Pointer to the buffer used in exec_tx_msg */
 };
 
 #endif /*! PAL_H */

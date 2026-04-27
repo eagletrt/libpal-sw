@@ -71,7 +71,7 @@ To send data through the peripheral:
 ## Driver Setup
 Drivers act as the bridge between the hardware and PAL. A driver must:
 - In ISR or receive callback: Capture hardware data and call `pal_api_add_to_rx_queue` to copy raw bytes into the PAL reception queue.
-- Provide a Send Implementation: Implement a function matching the `pal_send_fn` signature that handles the actual hardware-level transmission and/or serialization.
+- Provide a Send Implementation: Implement a function matching the `pal_send_callback` signature that handles the actual hardware-level transmission and/or serialization.
 - Handle Errors: Properly map hardware status codes to the PalReturnCode enumeration.
 
 ## Examples
