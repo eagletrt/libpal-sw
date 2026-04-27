@@ -63,9 +63,6 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
     if (hpal == NULL || buff == NULL)
         return PAL_RC_NULL_PTR;
 
-    if (ring_buffer_api_is_full(&hpal->rx_queue))
-        return PAL_RC_QUEUE_FULL;
-
     if (size == 0)
         return PAL_RC_INVALID_PARAM;
 
