@@ -43,8 +43,8 @@ enum PalReturnCode {
  * \brief           A structure representing a message.
  */
 struct PalMessage {
-    uint32_t size;  /*!< The size of the message. */
-    uint8_t data[]; /*!< Flexible array member holding the payload (valid bytes = size). */
+    uint32_t size;     /*!< The size of the message. */
+    uint8_t payload[]; /*!< Flexible array member holding the payload (valid bytes = size). */
 };
 
 /*!

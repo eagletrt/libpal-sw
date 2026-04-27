@@ -72,7 +72,7 @@ enum PalReturnCode serialize_error(const struct PalMessage *msg) {
 enum PalReturnCode send_global_buff(const struct PalMessage *msg) {
     if (msg == NULL)
         return PAL_RC_NULL_PTR;
-    memcpy(out_msg_buff, msg->data, msg->size);
+    memcpy(out_msg_buff, msg->payload, msg->size);
     return PAL_RC_OK;
 }
 

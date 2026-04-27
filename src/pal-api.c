@@ -29,7 +29,7 @@
 #include <string.h>
 
 EAGLETRT_STATIC_INLINE enum PalReturnCode prv_pal_deserialize_dummy(const struct PalMessage *in, void *out) {
-    return memcpy(out, in->data, in->size) == NULL ? PAL_RC_DESERIALIZATION_ERR : PAL_RC_OK;
+    return memcpy(out, in->payload, in->size) == NULL ? PAL_RC_DESERIALIZATION_ERR : PAL_RC_OK;
 }
 
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,

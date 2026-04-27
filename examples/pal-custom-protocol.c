@@ -34,7 +34,7 @@ enum PalReturnCode custom_deserialize(const struct PalMessage *in, void *out) {
         return PAL_RC_DESERIALIZATION_ERR;
 
     struct ApplicationPacket *dest = (struct ApplicationPacket *)out;
-    const uint8_t *src = in->data;
+    const uint8_t *src = in->payload;
 
     // Unpack size safely (Little Endian mapping)
     dest->size = (uint32_t)src[0] |
