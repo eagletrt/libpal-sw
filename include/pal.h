@@ -62,13 +62,13 @@ typedef enum PalReturnCode (*pal_deserialize_callback)(const struct PalMessage *
 /*!
  * \brief           Type definition for a function pointer used to send data.
  *
- * \param[in]       msg: Pointer to the message to be sent.
+ * \param[in]       message: Pointer to the message to be sent.
  * \retval          PAL_RC_OK on success, an error code otherwise:
- * \retval          PAL_RC_NULL_POINTER if `msg` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `message` is NULL;
  * \retval          PAL_RC_SERIALIZATION_ERR if serialization fails;
  * \retval          PAL_RC_IO_ERR if fails.
  */
-typedef enum PalReturnCode (*pal_send_callback)(const struct PalMessage *msg);
+typedef enum PalReturnCode (*pal_send_callback)(const struct PalMessage *message);
 
 /*!
  * \brief           A structure that encapsulates data and functions required to
@@ -81,11 +81,11 @@ struct PalHandler {
     struct RingBufferHandler tx_queue;    /*!< Ring buffer handler for managing the outgoing data queue. */
     pal_deserialize_callback deserialize; /*!< Function pointer for deserializing messages. */
     pal_send_callback send;               /*!< Function pointer for sending data to the peripheral. */
-    uint32_t max_msg_size;                /*!< Maximum size of the message */
-    uint8_t *add_to_rx_msg;               /*!< Pointer to the buffer used in add_to_rx_msg */
-    uint8_t *exec_rx_msg;                 /*!< Pointer to the buffer used in exec_rx_msg */
-    uint8_t *add_to_tx_msg;               /*!< Pointer to the buffer used in add_to_tx_msg */
-    uint8_t *exec_tx_msg;                 /*!< Pointer to the buffer used in exec_tx_msg */
+    uint32_t max_message_size;            /*!< Maximum size of the message */
+    uint8_t *add_to_rx_message;           /*!< Pointer to the buffer used in add_to_rx_message */
+    uint8_t *exec_rx_message;             /*!< Pointer to the buffer used in exec_rx_message */
+    uint8_t *add_to_tx_message;           /*!< Pointer to the buffer used in add_to_tx_message */
+    uint8_t *exec_tx_message;             /*!< Pointer to the buffer used in exec_tx_message */
 };
 
 #endif /*! PAL_H */

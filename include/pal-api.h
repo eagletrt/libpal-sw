@@ -31,7 +31,7 @@
  * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
  * \param[in]       rx_capacity: Number of elements in the reception queue.
  * \param[in]       tx_capacity: The capacity of the transmission queue.
- * \param[in]       max_msg_size: Maximum size of the message.
+ * \param[in]       max_message_size: Maximum size of the message.
  * \param[in]       deserialize: A pointer to a function that should deserialize messages.
  * \param[in]       send: A pointer to a function that should send messages to the desired peripheral.
  * \param[in]       cs_enter: A pointer to a function that should manage a critical section (can be NULL).
@@ -39,12 +39,12 @@
  * \param[out]      arena: A pointer to the arena allocator handler.
  * \retval          PAL_RC_OK on success, an error otherwise:
  * \retval          PAL_RC_NULL_POINTER  if `hpal`, `send` or `arena` is NULL.
- * \retval          PAL_RC_INVALID_ARGUMENT if `rx_capacity`, `tx_capacity` or `max_msg_size` are invalid.
+ * \retval          PAL_RC_INVALID_ARGUMENT if `rx_capacity`, `tx_capacity` or `max_message_size` are invalid.
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 uint32_t rx_capacity,
                                 uint32_t tx_capacity,
-                                uint32_t max_msg_size,
+                                uint32_t max_message_size,
                                 pal_deserialize_callback deserialize,
                                 pal_send_callback send,
                                 void (*cs_enter)(void),
@@ -59,7 +59,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  * \param[in]       size: The size of `buff` buffer.
  * \retval          PAL_RC_OK on success, an error otherwise:
  * \retval          PAL_RC_NULL_POINTER if `hpal` or `buff` is NULL;
- * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_msg_size`;
+ * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_message_size`;
  * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
  * \retval          PAL_RC_QUEUE_FULL if the reception queue is full;
  * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
@@ -88,7 +88,7 @@ enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out);
  * \retval          PAL_RC_OK on success, an error otherwise:
  * \retval          PAL_RC_NULL_POINTER if `hpal` or `data` is NULL;
  * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
- * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_msg_size`;
+ * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_message_size`;
  * \retval          PAL_RC_QUEUE_FULL if the transmission queue is full;
  * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
