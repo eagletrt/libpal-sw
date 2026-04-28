@@ -198,32 +198,32 @@ void check_pal_api_add_to_tx_queue_ok(void) {
  */
 
 /*!
- * \defgroup            pal_exec_rx Test P.A.L. exec_rx
+ * \defgroup            pal_process_rx Test P.A.L. process_rx
  * @{
  */
 
-void check_pal_api_exec_rx_null_pal_handler(void) {
+void check_pal_api_process_rx_null_pal_handler(void) {
     struct Point point = { 0 };
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_exec_rx(NULL, &point));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_process_rx(NULL, &point));
 }
 
-void check_pal_api_exec_rx_null_out(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_exec_rx(&hpal, NULL));
+void check_pal_api_process_rx_null_out(void) {
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_process_rx(&hpal, NULL));
 }
 
-void check_pal_api_exec_rx_queue_empty(void) {
+void check_pal_api_process_rx_queue_empty(void) {
     struct Point point = { 0 };
-    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_EMPTY, pal_api_exec_rx(&hpal, &point));
+    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_EMPTY, pal_api_process_rx(&hpal, &point));
 }
 
-void check_pal_api_exec_rx_deserialize_error(void) {
+void check_pal_api_process_rx_deserialize_error(void) {
     uint8_t buff[MESSAGE_MAX_SIZE];
     struct Point point = { 0 };
 
     hpal.deserialize = deserialize_error;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, buff, MESSAGE_MAX_SIZE), "Something went wrong when adding to the rx_queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESERIALIZATION_ERROR, pal_api_exec_rx(&hpal, &point), "Ignored deserialize error");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_DESERIALIZATION_ERROR, pal_api_process_rx(&hpal, &point), "Ignored deserialize error");
 }
 
 /*!
@@ -231,41 +231,41 @@ void check_pal_api_exec_rx_deserialize_error(void) {
  */
 
 /*!
- * \defgroup            pal_exec_tx Test P.A.L. exec_tx
+ * \defgroup            pal_process_tx Test P.A.L. process_tx
  * @{
  */
 
-void check_pal_api_exec_tx_null_pal_handler(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_exec_tx(NULL));
+void check_pal_api_process_tx_null_pal_handler(void) {
+    TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_process_tx(NULL));
 }
 
-void check_pal_api_exec_tx_queue_empty(void) {
-    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_EMPTY, pal_api_exec_tx(&hpal));
+void check_pal_api_process_tx_queue_empty(void) {
+    TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_EMPTY, pal_api_process_tx(&hpal));
 }
 
-void check_pal_api_exec_tx_serialize_error(void) {
+void check_pal_api_process_tx_serialize_error(void) {
     uint8_t a = 9;
 
     hpal.send = serialize_error;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_SERIALIZATION_ERROR, pal_api_exec_tx(&hpal), "Serialization succeeded but serialization should fail");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_SERIALIZATION_ERROR, pal_api_process_tx(&hpal), "Serialization succeeded but serialization should fail");
 }
 
-void check_pal_api_exec_tx_send_error(void) {
+void check_pal_api_process_tx_send_error(void) {
     uint8_t a = 9;
 
     hpal.send = send_error;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_IO_ERROR, pal_api_exec_tx(&hpal), "Send succeeded but send should fail");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_IO_ERROR, pal_api_process_tx(&hpal), "Send succeeded but send should fail");
 }
 
-void check_pal_api_exec_tx_send_ok(void) {
+void check_pal_api_process_tx_send_ok(void) {
     uint8_t a = 9;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Failed to add message to queue");
-    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_exec_tx(&hpal), "Send failed but send should succeed");
+    TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_process_tx(&hpal), "Send failed but send should succeed");
 }
 
 /*!
@@ -276,6 +276,7 @@ void check_pal_api_exec_tx_send_ok(void) {
  * \defgroup            Test P.A.L. message reception
  * @{
  */
+//TODO: move to a file specific for functional testing
 void check_pal_api_message_reception(void) {
     uint8_t in_msg[] = {
         'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
@@ -284,7 +285,7 @@ void check_pal_api_message_reception(void) {
 
     char out_msg[MESSAGE_MAX_SIZE];
     pal_api_add_to_rx_queue(&hpal, in_msg, size);
-    pal_api_exec_rx(&hpal, out_msg);
+    pal_api_process_rx(&hpal, out_msg);
     TEST_ASSERT_EQUAL_STRING(in_msg, out_msg);
 }
 
@@ -296,6 +297,7 @@ void check_pal_api_message_reception(void) {
  * \defgroup            Test P.A.L. message transmission
  * @{
  */
+//TODO: move to a file specific for functional testing
 void check_pal_api_message_transmission(void) {
     pal_api_init(&hpal, RX_CAPACITY, TX_CAPACITY, MESSAGE_MAX_SIZE, NULL, send_global_buff, NULL, NULL, &harena);
     uint8_t in_msg[] = {
@@ -303,7 +305,7 @@ void check_pal_api_message_transmission(void) {
     };
     uint32_t size = 14;
     pal_api_add_to_tx_queue(&hpal, in_msg, size);
-    pal_api_exec_tx(&hpal);
+    pal_api_process_tx(&hpal);
     TEST_ASSERT_EQUAL_STRING(in_msg, out_msg_buff);
 }
 
@@ -362,28 +364,28 @@ int main(void) {
      */
 
     /*!
-     * \defgroup            pal_exec_rx Test P.A.L. exec_rx
+     * \defgroup            pal_process_rx Test P.A.L. process_rx
      * @{
      */
 
-    RUN_TEST(check_pal_api_exec_rx_null_pal_handler);
-    RUN_TEST(check_pal_api_exec_rx_null_out);
-    RUN_TEST(check_pal_api_exec_rx_queue_empty);
-    RUN_TEST(check_pal_api_exec_rx_deserialize_error);
+    RUN_TEST(check_pal_api_process_rx_null_pal_handler);
+    RUN_TEST(check_pal_api_process_rx_null_out);
+    RUN_TEST(check_pal_api_process_rx_queue_empty);
+    RUN_TEST(check_pal_api_process_rx_deserialize_error);
     /*!
      * @}
      */
 
     /*!
-     * \defgroup            pal_exec_tx Test P.A.L. exec_tx
+     * \defgroup            pal_process_tx Test P.A.L. process_tx
      * @{
      */
 
-    RUN_TEST(check_pal_api_exec_tx_null_pal_handler);
-    RUN_TEST(check_pal_api_exec_tx_queue_empty);
-    RUN_TEST(check_pal_api_exec_tx_serialize_error);
-    RUN_TEST(check_pal_api_exec_tx_send_error);
-    RUN_TEST(check_pal_api_exec_tx_send_ok);
+    RUN_TEST(check_pal_api_process_tx_null_pal_handler);
+    RUN_TEST(check_pal_api_process_tx_queue_empty);
+    RUN_TEST(check_pal_api_process_tx_serialize_error);
+    RUN_TEST(check_pal_api_process_tx_send_error);
+    RUN_TEST(check_pal_api_process_tx_send_ok);
 
     /*!
      * @}

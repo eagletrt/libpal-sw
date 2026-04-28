@@ -40,6 +40,7 @@
  * \retval          PAL_RC_OK on success, an error otherwise:
  * \retval          PAL_RC_NULL_POINTER  if `hpal`, `send` or `arena` is NULL.
  * \retval          PAL_RC_INVALID_ARGUMENT if `rx_capacity`, `tx_capacity` or `max_message_size` are invalid.
+ * \retval          PAL_RC_IO_ERROR when allocation or ring buffer initialization fails
  */
 enum PalReturnCode pal_api_init(struct PalHandler *hpal,
                                 uint32_t rx_capacity,
@@ -67,7 +68,7 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
 enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, uint32_t size);
 
 /*!
- * \brief           Pop the first message and exec the deserialization.
+ * \brief           Pop the first message and process the deserialization.
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler.
  * \param[out]      out: A pointer to the buffer used to transmit.
@@ -77,7 +78,7 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
  * \retval          PAL_RC_IO_ERROR if the "pop-front" operation fails;
  * \retval          PAL_RC_DESERIALIZATION_ERROR if the deserialization fails.
  */
-enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out);
+enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal, void *out);
 
 /*!
  * \brief           Add data to the transmission buffer.
@@ -104,6 +105,6 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data, 
  * \retval          PAL_RC_IO_ERROR if the "pop-front" operation fails.
  * \retval          PAL_RC_SERIALIZATION_ERROR if the serialization fails.
  */
-enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal);
+enum PalReturnCode pal_api_process_tx(struct PalHandler *hpal);
 
 #endif /*! PAL_API_H */

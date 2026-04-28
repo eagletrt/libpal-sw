@@ -49,13 +49,40 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
     }
     hpal->deserialize = deserialize == NULL ? prv_pal_deserialize_dummy : deserialize;
     hpal->send = send;
-    ring_buffer_api_init(&hpal->rx_queue, max_message_size + sizeof(uint32_t), rx_capacity, cs_enter, cs_exit, arena);
-    ring_buffer_api_init(&hpal->tx_queue, sizeof(uint32_t) + max_message_size, tx_capacity, cs_enter, cs_exit, arena);
     hpal->max_message_size = max_message_size;
-    hpal->add_to_rx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
-    hpal->exec_rx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
-    hpal->add_to_tx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
-    hpal->exec_tx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+
+    /* Initialize ring buffers */
+    enum RingBufferReturnCode ring_res = RING_BUFFER_RC_OK;
+    ring_res = ring_buffer_api_init(&hpal->rx_queue, max_message_size + sizeof(uint32_t), rx_capacity, cs_enter, cs_exit, arena);
+    if (ring_res == RING_BUFFER_RC_NULL_POINTER)
+        return PAL_RC_IO_ERROR;
+    ring_res = ring_buffer_api_init(&hpal->tx_queue, sizeof(uint32_t) + max_message_size, tx_capacity, cs_enter, cs_exit, arena);
+    if (ring_res == RING_BUFFER_RC_NULL_POINTER)
+        return PAL_RC_IO_ERROR;
+
+    /* Allocate message buffers */
+    struct PalMessage *tmp_add_to_rx = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
+    if (tmp_add_to_rx == NULL)
+        return PAL_RC_IO_ERROR;
+
+    struct PalMessage *tmp_process_rx = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
+    if (tmp_process_rx == NULL)
+        return PAL_RC_IO_ERROR;
+
+    struct PalMessage *tmp_add_to_tx = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+    if (tmp_add_to_tx == NULL)
+        return PAL_RC_IO_ERROR;
+
+    struct PalMessage *tmp_process_tx = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+    if (tmp_process_tx == NULL)
+        return PAL_RC_IO_ERROR;
+
+    /* All allocations succeeded —> assign to hpal */
+    hpal->add_to_rx_message = tmp_add_to_rx;
+    hpal->process_rx_message = tmp_process_rx;
+    hpal->add_to_tx_message = tmp_add_to_tx;
+    hpal->process_tx_message = tmp_process_tx;
+
     return PAL_RC_OK;
 }
 
@@ -107,31 +134,31 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, 
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_exec_rx(struct PalHandler *hpal, void *out) {
+enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal, void *out) {
     if (hpal == NULL || out == NULL)
         return PAL_RC_NULL_POINTER;
 
     if (ring_buffer_api_is_empty(&hpal->rx_queue))
         return PAL_RC_QUEUE_EMPTY;
 
-    enum RingBufferReturnCode res = ring_buffer_api_pop_front(&hpal->rx_queue, hpal->exec_rx_message);
+    enum RingBufferReturnCode res = ring_buffer_api_pop_front(&hpal->rx_queue, hpal->process_rx_message);
     if (res == RING_BUFFER_RC_EMPTY) {
         return PAL_RC_QUEUE_EMPTY;
     } else if (res != RING_BUFFER_RC_OK) {
         return PAL_RC_IO_ERROR;
     }
 
-    return hpal->deserialize((struct PalMessage *)hpal->exec_rx_message, out);
+    return hpal->deserialize((struct PalMessage *)hpal->process_rx_message, out);
 }
 
-enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal) {
+enum PalReturnCode pal_api_process_tx(struct PalHandler *hpal) {
     if (hpal == NULL)
         return PAL_RC_NULL_POINTER;
 
     if (ring_buffer_api_is_empty(&hpal->tx_queue))
         return PAL_RC_QUEUE_EMPTY;
 
-    enum RingBufferReturnCode res = ring_buffer_api_pop_front(&hpal->tx_queue, hpal->exec_tx_message);
+    enum RingBufferReturnCode res = ring_buffer_api_pop_front(&hpal->tx_queue, hpal->process_tx_message);
 
     if (res == RING_BUFFER_RC_EMPTY) {
         return PAL_RC_QUEUE_EMPTY;
@@ -139,5 +166,5 @@ enum PalReturnCode pal_api_exec_tx(struct PalHandler *hpal) {
         return PAL_RC_IO_ERROR;
     }
 
-    return hpal->send((struct PalMessage *)hpal->exec_tx_message);
+    return hpal->send((struct PalMessage *)hpal->process_tx_message);
 }

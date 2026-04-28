@@ -77,15 +77,15 @@ typedef enum PalReturnCode (*pal_send_callback)(const struct PalMessage *message
  * \attention       This structure should not be used directly.
  */
 struct PalHandler {
-    struct RingBufferHandler rx_queue;    /*!< Ring buffer handler for managing received messages queue. */
-    struct RingBufferHandler tx_queue;    /*!< Ring buffer handler for managing the outgoing data queue. */
-    pal_deserialize_callback deserialize; /*!< Function pointer for deserializing messages. */
-    pal_send_callback send;               /*!< Function pointer for sending data to the peripheral. */
-    uint32_t max_message_size;            /*!< Maximum size of the message */
-    struct PalMessage *add_to_rx_message; /*!< Pointer to the buffer used in add_to_rx_message */
-    struct PalMessage *exec_rx_message;   /*!< Pointer to the buffer used in exec_rx_message */
-    struct PalMessage *add_to_tx_message; /*!< Pointer to the buffer used in add_to_tx_message */
-    struct PalMessage *exec_tx_message;   /*!< Pointer to the buffer used in exec_tx_message */
+    struct RingBufferHandler rx_queue;     /*!< Ring buffer handler for managing received messages queue. */
+    struct RingBufferHandler tx_queue;     /*!< Ring buffer handler for managing the outgoing data queue. */
+    pal_deserialize_callback deserialize;  /*!< Function pointer for deserializing messages. */
+    pal_send_callback send;                /*!< Function pointer for sending data to the peripheral. */
+    uint32_t max_message_size;             /*!< Maximum size of the message */
+    struct PalMessage *add_to_rx_message;  /*!< Pointer to the buffer used in add_to_rx_message */
+    struct PalMessage *process_rx_message; /*!< Pointer to the buffer used in process_rx_message */
+    struct PalMessage *add_to_tx_message;  /*!< Pointer to the buffer used in add_to_tx_message */
+    struct PalMessage *process_tx_message; /*!< Pointer to the buffer used in process_tx_message */
 };
 
 #endif /*! PAL_H */
