@@ -52,10 +52,10 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
     ring_buffer_api_init(&hpal->rx_queue, max_message_size + sizeof(uint32_t), rx_capacity, cs_enter, cs_exit, arena);
     ring_buffer_api_init(&hpal->tx_queue, sizeof(uint32_t) + max_message_size, tx_capacity, cs_enter, cs_exit, arena);
     hpal->max_message_size = max_message_size;
-    hpal->add_to_rx_message = (uint8_t *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
-    hpal->exec_rx_message = (uint8_t *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
-    hpal->add_to_tx_message = (uint8_t *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
-    hpal->exec_tx_message = (uint8_t *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+    hpal->add_to_rx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
+    hpal->exec_rx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
+    hpal->add_to_tx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+    hpal->exec_tx_message = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
     return PAL_RC_OK;
 }
 
@@ -72,8 +72,8 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
     if (ring_buffer_api_is_full(&hpal->rx_queue))
         return PAL_RC_QUEUE_FULL;
 
-    memcpy(hpal->add_to_rx_message, &size, sizeof(uint32_t));
-    memcpy((uint8_t *)hpal->add_to_rx_message + sizeof(uint32_t), buff, size);
+    hpal->add_to_rx_message->size = size;
+    memcpy(hpal->add_to_rx_message->payload, buff, size);
     enum RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_queue, hpal->add_to_rx_message);
     if (res == RING_BUFFER_RC_FULL) {
         return PAL_RC_QUEUE_FULL;
@@ -96,8 +96,8 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, 
     if (ring_buffer_api_is_full(&hpal->tx_queue))
         return PAL_RC_QUEUE_FULL;
 
-    memcpy(hpal->add_to_tx_message, &size, sizeof(uint32_t));
-    memcpy(hpal->add_to_tx_message + sizeof(uint32_t), buff, size);
+    hpal->add_to_tx_message->size = size;
+    memcpy(hpal->add_to_tx_message->payload, buff, size);
     enum RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->tx_queue, hpal->add_to_tx_message);
     if (res == RING_BUFFER_RC_FULL) {
         return PAL_RC_QUEUE_FULL;

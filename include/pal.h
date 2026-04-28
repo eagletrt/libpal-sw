@@ -82,10 +82,10 @@ struct PalHandler {
     pal_deserialize_callback deserialize; /*!< Function pointer for deserializing messages. */
     pal_send_callback send;               /*!< Function pointer for sending data to the peripheral. */
     uint32_t max_message_size;            /*!< Maximum size of the message */
-    uint8_t *add_to_rx_message;           /*!< Pointer to the buffer used in add_to_rx_message */
-    uint8_t *exec_rx_message;             /*!< Pointer to the buffer used in exec_rx_message */
-    uint8_t *add_to_tx_message;           /*!< Pointer to the buffer used in add_to_tx_message */
-    uint8_t *exec_tx_message;             /*!< Pointer to the buffer used in exec_tx_message */
+    struct PalMessage *add_to_rx_message; /*!< Pointer to the buffer used in add_to_rx_message */
+    struct PalMessage *exec_rx_message;   /*!< Pointer to the buffer used in exec_rx_message */
+    struct PalMessage *add_to_tx_message; /*!< Pointer to the buffer used in add_to_tx_message */
+    struct PalMessage *exec_tx_message;   /*!< Pointer to the buffer used in exec_tx_message */
 };
 
 #endif /*! PAL_H */
