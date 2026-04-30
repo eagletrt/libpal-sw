@@ -15,7 +15,7 @@ To use PAL,first declare a handler using `PalHandler`.
 In order to initialize it, the following need to be provided:
 - `rx_capacity`: Number of elements in the reception queue.
 - `tx_capacity`: Number of elements in the transmission queue.
-- `max_msg_size`: Maximum size in bytes of a single message.
+- `max_message_size`: Maximum size in bytes of a single message.
 - `deserialize`: Function pointer for data deserialization (can be NULL).
 - `send`: Function pointer for the driver-level transmission.
 - `cs_enter` / `cs_exit`: Functions to manage critical sections (can be NULL).
@@ -51,7 +51,7 @@ pal_api_init(&hpal_uart, RX_CAPACITY, TX_CAPACITY, UART_MAX_MSG_SIZE, deserializ
 
 ```
 > [!WARNING]
-> If using the default deserializer, ensure the destination buffer is at least `max_msg_size` to avoid a potential buffer overflow.
+> If using the default deserializer, ensure the destination buffer is at least `max_message_size` to avoid a potential buffer overflow.
 
 > [!NOTE]
 > `NULL` can be passed in place of the `cs_enter` and `cs_exit` functions, in that case
@@ -60,7 +60,7 @@ pal_api_init(&hpal_uart, RX_CAPACITY, TX_CAPACITY, UART_MAX_MSG_SIZE, deserializ
 ### Reception
 To process incoming data:
 1. The driver populates the queue (see Driver Setup).
-2. The application calls `pal_api_exec_rx` in a processing loop to pop the first message and execute the deserialization into a provided buffer.
+2. The application calls `pal_api_process_rx` in a processing loop to pop the first message and execute the deserialization into a provided buffer.
 
 ### Transmission
 

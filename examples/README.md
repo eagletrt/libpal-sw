@@ -9,8 +9,8 @@ The examples are structured into single-purpose files to illustrate specific lay
 
 Demonstrates the standard application-level workflow:
 - Initializing the PAL handler via a driver interface.
-- Queuing data for transmission using pal_api_add_to_tx_queue.
-- Processing received messages within a main execution loop via pal_api_exec_rx.
+- Queuing data for transmission using `pal_api_add_to_tx_queue`.
+- Processing received messages within a main execution loop via `pal_api_process_rx`.
 
 [pal-driver-mock.c](./pal-driver-mock.c)
 
