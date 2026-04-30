@@ -52,28 +52,29 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
     hpal->max_message_size = max_message_size;
 
     /* Initialize ring buffers */
+    const size_t item_size = sizeof(struct PalMessage) + max_message_size;
     enum RingBufferReturnCode ring_res = RING_BUFFER_RC_OK;
-    ring_res = ring_buffer_api_init(&hpal->rx_queue, max_message_size + sizeof(uint32_t), rx_capacity, cs_enter, cs_exit, arena);
+    ring_res = ring_buffer_api_init(&hpal->rx_queue, item_size, rx_capacity, cs_enter, cs_exit, arena);
     if (ring_res == RING_BUFFER_RC_NULL_POINTER)
         return PAL_RC_IO_ERROR;
-    ring_res = ring_buffer_api_init(&hpal->tx_queue, sizeof(uint32_t) + max_message_size, tx_capacity, cs_enter, cs_exit, arena);
+    ring_res = ring_buffer_api_init(&hpal->tx_queue, item_size, tx_capacity, cs_enter, cs_exit, arena);
     if (ring_res == RING_BUFFER_RC_NULL_POINTER)
         return PAL_RC_IO_ERROR;
 
     /* Allocate message buffers */
-    struct PalMessage *tmp_add_to_rx = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
+    struct PalMessage *tmp_add_to_rx = (struct PalMessage *)arena_allocator_api_alloc(arena, item_size);
     if (tmp_add_to_rx == NULL)
         return PAL_RC_IO_ERROR;
 
-    struct PalMessage *tmp_process_rx = (struct PalMessage *)arena_allocator_api_alloc(arena, max_message_size + sizeof(uint32_t));
+    struct PalMessage *tmp_process_rx = (struct PalMessage *)arena_allocator_api_alloc(arena, item_size);
     if (tmp_process_rx == NULL)
         return PAL_RC_IO_ERROR;
 
-    struct PalMessage *tmp_add_to_tx = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+    struct PalMessage *tmp_add_to_tx = (struct PalMessage *)arena_allocator_api_alloc(arena, item_size);
     if (tmp_add_to_tx == NULL)
         return PAL_RC_IO_ERROR;
 
-    struct PalMessage *tmp_process_tx = (struct PalMessage *)arena_allocator_api_alloc(arena, sizeof(uint32_t) + max_message_size);
+    struct PalMessage *tmp_process_tx = (struct PalMessage *)arena_allocator_api_alloc(arena, item_size);
     if (tmp_process_tx == NULL)
         return PAL_RC_IO_ERROR;
 
