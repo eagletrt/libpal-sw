@@ -56,16 +56,16 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
  * \brief           Add to the reception queue.
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler.
- * \param[in]       buff: A pointer to the buffer provided by the peripheral.
- * \param[in]       size: The size of `buff` buffer.
+ * \param[in]       payload: A pointer to the buffer provided by the peripheral.
+ * \param[in]       size: The size of `payload` buffer.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_POINTER if `hpal` or `buff` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `hpal` or `payload` is NULL;
  * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_message_size`;
  * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
  * \retval          PAL_RC_QUEUE_FULL if the reception queue is full;
  * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, uint32_t size);
+enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *payload, uint32_t size);
 
 /*!
  * \brief           Pop the first message and process the deserialization.

@@ -87,8 +87,8 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buff, uint32_t size) {
-    if (hpal == NULL || buff == NULL)
+enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *payload, uint32_t size) {
+    if (hpal == NULL || payload == NULL)
         return PAL_RC_NULL_POINTER;
 
     if (size == 0)
@@ -101,7 +101,7 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
         return PAL_RC_QUEUE_FULL;
 
     hpal->add_to_rx_message->size = size;
-    memcpy(hpal->add_to_rx_message->payload, buff, size);
+    memcpy(hpal->add_to_rx_message->payload, payload, size);
     enum RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->rx_queue, hpal->add_to_rx_message);
     if (res == RING_BUFFER_RC_FULL) {
         return PAL_RC_QUEUE_FULL;
@@ -111,8 +111,8 @@ enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *buf
     return PAL_RC_OK;
 }
 
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, uint32_t size) {
-    if (hpal == NULL || buff == NULL)
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *payload, uint32_t size) {
+    if (hpal == NULL || payload == NULL)
         return PAL_RC_NULL_POINTER;
 
     if (size == 0)
@@ -125,7 +125,7 @@ enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *buff, 
         return PAL_RC_QUEUE_FULL;
 
     hpal->add_to_tx_message->size = size;
-    memcpy(hpal->add_to_tx_message->payload, buff, size);
+    memcpy(hpal->add_to_tx_message->payload, payload, size);
     enum RingBufferReturnCode res = ring_buffer_api_push_back(&hpal->tx_queue, hpal->add_to_tx_message);
     if (res == RING_BUFFER_RC_FULL) {
         return PAL_RC_QUEUE_FULL;
