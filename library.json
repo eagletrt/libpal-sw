@@ -38,7 +38,7 @@
       "version": "https://github.com/eagletrt/libring-buffer-sw.git#v0.2.0"
     },
     {
-      "name": "libeagletrt",
+      "name": "LibEagleTrt",
       "version": "https://github.com/eagletrt/libeagletrt-sw.git#v0.1.0"
     }
   ],
