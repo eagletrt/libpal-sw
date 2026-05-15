@@ -43,7 +43,7 @@ jobs:
             printf "platform = native\n" >> platformio.ini
             printf "platform_packages = toolchain-gccarmnoneeabi@=1.140201.0\n" >> platformio.ini
             printf "lib_deps = Unity, ./\n" >> platformio.ini
-            printf "build_flags = -Itest/include \n" > platformio.ini
+            printf "build_flags = -Itest/include \n" >> platformio.ini
             echo "Created platformio.ini"
           fi
           pio test -e latest_stable
@@ -90,7 +90,6 @@ jobs:
             printf "[env:latest_stable]\n" > platformio.ini
             printf "platform = native\n" >> platformio.ini
             printf "platform_packages = toolchain-gccarmnoneeabi@=1.140201.0\n" >> platformio.ini
-            printf" lib_deps = Unity, ./\n" >> platformio.ini
             printf "check_tool = clangtidy\n" >> platformio.ini
             printf "check_flags =\n" >> platformio.ini
             printf "    clangtidy: --checks=-*,cert-*,clang-analyzer-*,bugprone-*,performance-*,readability-*,-bugprone-easily-swappable-parameters\n" >> platformio.ini
