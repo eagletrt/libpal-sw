@@ -84,7 +84,7 @@ enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal, void *out);
  * \brief           Add data to the transmission buffer.
  *
  * \param[out]      hpal: A pointer to the P.A.L. handler.
- * \param[in]       data: A pointer to the structured data.
+ * \param[in]       payload: A pointer to the structured data.
  * \param[in]       size: Number of bytes of the data.
  * \retval          PAL_RC_OK on success, an error otherwise:
  * \retval          PAL_RC_NULL_POINTER if `hpal` or `data` is NULL;
@@ -93,7 +93,7 @@ enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal, void *out);
  * \retval          PAL_RC_QUEUE_FULL if the transmission queue is full;
  * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *data, uint32_t size);
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *payload, uint32_t size);
 
 /*!
  * \brief           Execute data transmission for the desired peripheral.
