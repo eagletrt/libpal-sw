@@ -109,7 +109,7 @@ int main(void) {
     pkt_out.payload[2] = 0xCC;
 
     serialize_and_send(&hpal, &pkt_out);
-    pal_api_exec_tx(&hpal);
+    pal_api_process_tx(&hpal);
 
     // --- Simulated Reception Phase ---
     // Simulating hardware receiving a packet: Size (3), Cmd (0x10), Payload (AA BB CC)
@@ -117,7 +117,7 @@ int main(void) {
     pal_api_add_to_rx_queue(&hpal, raw_incoming, sizeof(raw_incoming));
 
     // --- Processing Phase ---
-    if (pal_api_exec_rx(&hpal, &received_pkt) == PAL_RC_OK) {
+    if (pal_api_process_rx(&hpal, &received_pkt) == PAL_RC_OK) {
         printf("[APP] Received Command: 0x%X\n", received_pkt.command_id);
         printf("[APP] Payload Size: %u bytes\n", received_pkt.size);
         printf("[APP] Payload Data: ");

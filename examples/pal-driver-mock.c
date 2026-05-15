@@ -24,7 +24,7 @@ static uint8_t HW_REGISTER[MOCK_MAX_MSG_SIZE];
  */
 static enum PalReturnCode mock_hw_transmit(const struct PalMessage *msg) {
     if (msg == NULL)
-        return PAL_RC_NULL_PTR;
+        return PAL_RC_NULL_POINTER;
     if (msg->size > MOCK_MAX_MSG_SIZE)
         return PAL_RC_MESSAGE_TOO_BIG;
 

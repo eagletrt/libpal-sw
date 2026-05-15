@@ -12,11 +12,11 @@
 #include <string.h>
 #include "../include/pal-api.h"
 #include "arena-allocator-api.h"
-#include "pal-driver-mock.c"
+#include "pal-driver-mock.h"
 
 // Forward declarations for the mock driver interface
-extern enum PalReturnCode mock_driver_init(struct PalHandler *hpal, struct ArenaAllocatorHandler *arena);
-extern void MOCK_HW_IRQHandler(struct PalHandler *hpal); // Used here purely for simulation
+//extern enum PalReturnCode mock_driver_init(struct PalHandler *hpal, struct ArenaAllocatorHandler *arena);
+//extern void MOCK_HW_IRQHandler(struct PalHandler *hpal); // Used here purely for simulation
 
 #define MAX_SIZE (64U)
 
@@ -40,8 +40,8 @@ int main(void) {
     if (res_add_tx != PAL_RC_OK) {
         //handle error
     }
-    enum PalReturnCode res_exec_tx = pal_api_exec_tx(&hpal); // Triggers driver's send function
-    if (res_exec_tx != PAL_RC_OK) {
+    enum PalReturnCode res_process_tx = pal_api_process_tx(&hpal); // Triggers driver's send function
+    if (res_process_tx != PAL_RC_OK) {
         //handle error
     }
 
@@ -51,7 +51,7 @@ int main(void) {
 
     // --- Processing Phase ---
     // Typically placed inside an infinite while(1) loop
-    if (pal_api_exec_rx(&hpal, rx_buffer) == PAL_RC_OK) {
+    if (pal_api_process_rx(&hpal, rx_buffer) == PAL_RC_OK) {
         printf("[APP] Successfully processed received data: %s\n", rx_buffer);
     }
 

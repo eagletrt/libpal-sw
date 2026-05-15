@@ -44,12 +44,12 @@ gcc -g -Wall -Wextra \
     -I../src \
     -I../.pio/libdeps/debug/ArenaAllocator/include \
     -I../.pio/libdeps/debug/RingBuffer/include \
-    -I../.pio/libdeps/debug/libeagletrt/include \
+    -I../.pio/libdeps/debug/LibEagleTrt/include \
     pal-basic.c \
     ../src/pal-api.c \
     ../.pio/libdeps/debug/ArenaAllocator/src/arena-allocator-api.c \
     ../.pio/libdeps/debug/RingBuffer/src/ring-buffer-api.c \
-    ../.pio/libdeps/debug/libeagletrt/src/eagletrt-api.c \
+    ../.pio/libdeps/debug/LibEagleTrt/src/eagletrt-api.c \
     -o pal-basic-exec
 ```
 
@@ -61,11 +61,11 @@ gcc -g -Wall -Wextra \
     -I../src \
     -I../.pio/libdeps/debug/ArenaAllocator/include \
     -I../.pio/libdeps/debug/RingBuffer/include \
-    -I../.pio/libdeps/debug/libeagletrt/include \
+    -I../.pio/libdeps/debug/LibEagleTrt/include \
     pal-custom-protocol.c \
     ../src/pal-api.c \
     ../.pio/libdeps/debug/ArenaAllocator/src/arena-allocator-api.c \
     ../.pio/libdeps/debug/RingBuffer/src/ring-buffer-api.c \
-    ../.pio/libdeps/debug/libeagletrt/src/eagletrt-api.c \
+    ../.pio/libdeps/debug/LibEagleTrt/src/eagletrt-api.c \
     -o pal-custom-protocol-exec
 ```
