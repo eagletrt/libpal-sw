@@ -91,6 +91,16 @@ jobs:
             printf "platform = native\n" >> platformio.ini
             printf "platform_packages = toolchain-gccarmnoneeabi@=1.140201.0\n" >> platformio.ini
             printf" lib_deps = Unity, ./\n" >> platformio.ini
+            printf "check_tool = clangtidy\n" >> platformio.ini
+            printf "check_flags =\n" >> platformio.ini
+            printf "    clangtidy: --checks=-*,cert-*,clang-analyzer-*,bugprone-*,performance-*,readability-*,-bugprone-easily-swappable-parameters\n" >> platformio.ini
+            printf "    clangtidy: --warnings-as-errors=clang-analyzer-*,bugprone-*\n" >> platformio.ini
+            printf "    clangtidy: --header-filter=^.*Core/(Inc|Src)/.+/[^/]+\.(c|h)$\n" >> platformio.ini
+            printf "    clangtidy: --system-headers=false\n" >> platformio.ini
+            printf "check_src_filters =\n" >> platformio.ini
+            printf "    -<**>\n" >> platformio.ini
+            printf "    +<src> ; CHANGE TO YOUR SUBFOLDER\n" >> platformio.ini
+            printf "    +<include> ; CHANGE TO YOUR SUBFOLDER\n" >> platformio.ini
             echo "Created platformio.ini"
           fi
           pio check
