@@ -205,7 +205,7 @@ void check_pal_handler_deep_compare_different_message_payload(void) {
 
     copy->process_rx_message->payload[0] ^= 0x55;
     copy->process_tx_message->payload[0] ^= 0x55;
-    TEST_ASSERT_TRUE_MESSAGE(pal_handler_deep_compare(&base_handler, copy), "pal_handler_deep_compare should return true when comparing identical message payloads");
+    TEST_ASSERT_FALSE_MESSAGE(pal_handler_deep_compare(&base_handler, copy), "pal_handler_deep_compare should return false when comparing different message payloads");
 }
 
 /*!
