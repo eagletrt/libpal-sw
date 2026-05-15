@@ -6,15 +6,14 @@
 #include "arena-allocator.h"
 #include "arena-allocator-api.h"
 #include "utils.h"
+#include "fff.h"
 
-void dummy_deserialize(void) {
-}
-void dummy_send(void) {
-}
-void dummy_cs_enter(void) {
-}
-void dummy_cs_exit(void) {
-}
+DEFINE_FFF_GLOBALS
+
+FAKE_VOID_FUNC(dummy_deserialize)
+FAKE_VOID_FUNC(dummy_send)
+FAKE_VOID_FUNC(dummy_cs_enter)
+FAKE_VOID_FUNC(dummy_cs_exit)
 
 struct PalHandler base_handler;
 struct ArenaAllocatorHandler harena;
