@@ -84,6 +84,14 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
     hpal->add_to_tx_message = tmp_add_to_tx;
     hpal->process_tx_message = tmp_process_tx;
 
+    hpal->add_to_rx_message->size = max_message_size;
+    memset(hpal->add_to_rx_message->payload, 0, max_message_size);
+    hpal->process_rx_message->size = max_message_size;
+    memset(hpal->process_rx_message->payload, 0, max_message_size);
+    hpal->add_to_tx_message->size = max_message_size;
+    memset(hpal->add_to_tx_message->payload, 0, max_message_size);
+    hpal->process_tx_message->size = max_message_size;
+    memset(hpal->process_tx_message->payload, 0, max_message_size);
     return PAL_RC_OK;
 }
 
