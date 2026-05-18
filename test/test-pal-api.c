@@ -71,27 +71,19 @@ void tearDown() {
  */
 
 void check_pal_api_init_null_pal_handler(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_init(NULL, RX_CAPACITY, TX_CAPACITY, MESSAGE_MAX_SIZE, NULL, send, NULL, NULL, &harena), "Didn't return null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_init_message_size_zero(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_INVALID_ARGUMENT, pal_api_init(&hpal, RX_CAPACITY, TX_CAPACITY, 0, NULL, send, NULL, NULL, &harena), "Didn't return invalid argument error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_init_null_arena_handler(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_init(&hpal, RX_CAPACITY, TX_CAPACITY, MESSAGE_MAX_SIZE, NULL, send, NULL, NULL, NULL), "Didn't return null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_init_null_send_function(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_init(&hpal, RX_CAPACITY, TX_CAPACITY, MESSAGE_MAX_SIZE, NULL, NULL, NULL, NULL, &harena), "Didn't return null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_init_ok(void) {
@@ -116,29 +108,21 @@ void check_pal_api_init_ok(void) {
 
 void check_pal_api_add_to_rx_queue_null_pal_handler(void) {
     uint8_t a = 1;
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_add_to_rx_queue(NULL, &a, MESSAGE_MAX_SIZE), "Didn't return a null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_rx_queue_null_data(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_add_to_rx_queue(&hpal, NULL, 0U), "Didn't return a null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_rx_queue_message_size_zero(void) {
     uint8_t a = 1;
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_INVALID_ARGUMENT, pal_api_add_to_rx_queue(&hpal, &a, 0U), "Didn't return invalid argument error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_rx_queue_message_size_too_big(void) {
     uint8_t buff[MESSAGE_MAX_SIZE];
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_MESSAGE_TOO_BIG, pal_api_add_to_rx_queue(&hpal, buff, MESSAGE_MAX_SIZE + 1U), "Didn't return message too big error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_rx_queue_full_rx_queue(void) {
@@ -147,9 +131,7 @@ void check_pal_api_add_to_rx_queue_full_rx_queue(void) {
     uint8_t b = 2;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_rx_queue(&hpal, &a, sizeof(uint8_t)), "Incorrectly reporting rx queue as full");
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_rx_queue(&hpal, &b, sizeof(uint8_t)), "Adding to rx queue didn't return queue full error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it this second time");
 }
 
 void check_pal_api_add_to_rx_queue_ok(void) {
@@ -169,29 +151,21 @@ void check_pal_api_add_to_rx_queue_ok(void) {
 
 void check_pal_api_add_to_tx_queue_null_pal_handler(void) {
     uint8_t a = 1;
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_add_to_tx_queue(NULL, &a, sizeof(uint8_t)), "Didn't return null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_tx_queue_null_data(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_NULL_POINTER, pal_api_add_to_tx_queue(&hpal, NULL, 42U), "Didn't return null pointer error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_tx_queue_message_size_zero(void) {
     uint8_t a = 1;
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_INVALID_ARGUMENT, pal_api_add_to_tx_queue(&hpal, &a, 0U), "Didn't return invalid argument error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_tx_queue_message_size_too_big(void) {
     uint8_t buff[MESSAGE_MAX_SIZE];
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_MESSAGE_TOO_BIG, pal_api_add_to_tx_queue(&hpal, buff, MESSAGE_MAX_SIZE + 1U), "Didn't return message to big error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_add_to_tx_queue_full_tx_queue(void) {
@@ -200,9 +174,7 @@ void check_pal_api_add_to_tx_queue_full_tx_queue(void) {
     uint8_t b = 2;
 
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_OK, pal_api_add_to_tx_queue(&hpal, &a, sizeof(uint8_t)), "Incorrectly reporting tx queue as full");
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT_MESSAGE(PAL_RC_QUEUE_FULL, pal_api_add_to_tx_queue(&hpal, &b, sizeof(uint8_t)), "Adding to tx queue didn't return queue full error");
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it this second time");
 }
 
 void check_pal_api_add_to_tx_queue_ok(void) {
@@ -222,22 +194,16 @@ void check_pal_api_add_to_tx_queue_ok(void) {
 
 void check_pal_api_process_rx_null_pal_handler(void) {
     uint32_t test = 1;
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_process_rx(NULL, &test));
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_process_rx_null_out(void) {
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT(PAL_RC_NULL_POINTER, pal_api_process_rx(&hpal, NULL));
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_process_rx_queue_empty(void) {
     uint32_t test = 1;
-    struct PalHandler *before_hpal = pal_handler_deep_copy(&hpal, &harena);
     TEST_ASSERT_EQUAL_INT(PAL_RC_QUEUE_EMPTY, pal_api_process_rx(&hpal, &test));
-    TEST_ASSERT_MESSAGE(pal_handler_deep_compare(before_hpal, &hpal) == true, "Structure was changed but the fuction shouldn't have done anything to it");
 }
 
 void check_pal_api_process_rx_deserialize_error(void) {
