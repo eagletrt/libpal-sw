@@ -22,7 +22,6 @@
 #include "arena-allocator-api.h"
 #include "unity.h"
 #include "fff.h"
-#include "utils.h"
 
 #include <stddef.h>
 #include <stdint.h>
