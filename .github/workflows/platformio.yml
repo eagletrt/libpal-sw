@@ -11,6 +11,10 @@ on:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        example: [examples/pal-basic.c, examples/pal-custom-protocol.c]
+
     name: Unit Tests
     runs-on:
       group: ci-runners
@@ -50,8 +54,7 @@ jobs:
 
       - name: Run Example
         run: |
-          pio ci -l . --exclude=src/test --exclude=src/examples -O "framework=stm32cube" examples/pal-basic.c examples/pal-driver-mock.c examples/pal-driver-mock.h -b nucleo_h723zg
-          pio ci -l . --exclude=src/test --exclude=src/examples -O "framework=stm32cube" examples/pal-custom-protocol.c -b nucleo_h723zg
+          pio ci -l . --exclude=src/test --exclude=src/examples -O "framework=stm32cube" ${{ matrix.example }} -b nucleo_f446re
   check:
     name: Static Code Analysis
     runs-on:
