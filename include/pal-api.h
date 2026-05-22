@@ -28,7 +28,7 @@
 /*!
  * \brief           Initialize the P.A.L. handler.
  *
- * \param[out]      hpal: A pointer to the P.A.L. handler to initialize.
+ * \param[out]      pal_handler: A pointer to the P.A.L. handler to initialize.
  * \param[in]       rx_capacity: Number of elements in the reception queue.
  * \param[in]       tx_capacity: The capacity of the transmission queue.
  * \param[in]       max_message_size: Maximum size of the message.
@@ -37,12 +37,13 @@
  * \param[in]       cs_enter: A pointer to a function that should manage a critical section (can be NULL).
  * \param[in]       cs_exit: A pointer to a function that should exit a critical section (can be NULL).
  * \param[out]      arena: A pointer to the arena allocator handler.
+ *
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_POINTER  if `hpal`, `send` or `arena` is NULL.
+ * \retval          PAL_RC_NULL_POINTER if any of the pointer parameters are NULL.
  * \retval          PAL_RC_INVALID_ARGUMENT if `rx_capacity`, `tx_capacity` or `max_message_size` are invalid.
  * \retval          PAL_RC_IO_ERROR when allocation or ring buffer initialization fails
  */
-enum PalReturnCode pal_api_init(struct PalHandler *hpal,
+enum PalReturnCode pal_api_init(struct PalHandler *pal_handler,
                                 uint32_t rx_capacity,
                                 uint32_t tx_capacity,
                                 uint32_t max_message_size,
@@ -55,56 +56,56 @@ enum PalReturnCode pal_api_init(struct PalHandler *hpal,
 /*!
  * \brief           Add to the reception queue.
  *
- * \param[out]      hpal: A pointer to the P.A.L. handler.
+ * \param[out]      pal_handler: A pointer to the P.A.L. handler.
  * \param[in]       payload: A pointer to the buffer provided by the peripheral.
  * \param[in]       size: The size of `payload` buffer.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_POINTER if `hpal` or `payload` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `pal_handler` or `payload` is NULL;
  * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_message_size`;
  * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
  * \retval          PAL_RC_QUEUE_FULL if the reception queue is full;
  * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *hpal, uint8_t *payload, uint32_t size);
+enum PalReturnCode pal_api_add_to_rx_queue(struct PalHandler *pal_handler, uint8_t *payload, uint32_t size);
 
 /*!
  * \brief           Pop the first message and process the deserialization.
  *
- * \param[out]      hpal: A pointer to the P.A.L. handler.
+ * \param[out]      pal_handler: A pointer to the P.A.L. handler.
  * \param[out]      out: A pointer to the buffer used to transmit.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_POINTER if `hpal` or `out` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `pal_handler` or `out` is NULL;
  * \retval          PAL_RC_QUEUE_EMPTY if the reception queue is empty;
  * \retval          PAL_RC_IO_ERROR if the "pop-front" operation fails;
  * \retval          PAL_RC_DESERIALIZATION_ERROR if the deserialization fails.
  */
-enum PalReturnCode pal_api_process_rx(struct PalHandler *hpal, void *out);
+enum PalReturnCode pal_api_process_rx(struct PalHandler *pal_handler, void *out);
 
 /*!
  * \brief           Add data to the transmission buffer.
  *
- * \param[out]      hpal: A pointer to the P.A.L. handler.
+ * \param[out]      pal_handler: A pointer to the P.A.L. handler.
  * \param[in]       payload: A pointer to the structured data.
  * \param[in]       size: Number of bytes of the data.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_POINTER if `hpal` or `data` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `pal_handler` or `data` is NULL;
  * \retval          PAL_RC_INVALID_ARGUMENT if `size` is invalid;
  * \retval          PAL_RC_MESSAGE_TOO_BIG if `size` is greater than `max_message_size`;
  * \retval          PAL_RC_QUEUE_FULL if the transmission queue is full;
  * \retval          PAL_RC_IO_ERROR if the "push-back" operation fails.
  */
-enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *hpal, void *payload, uint32_t size);
+enum PalReturnCode pal_api_add_to_tx_queue(struct PalHandler *pal_handler, void *payload, uint32_t size);
 
 /*!
  * \brief           Execute data transmission for the desired peripheral.
  *
- * \param[out]      hpal: A pointer to the P.A.L. handler.
+ * \param[out]      pal_handler: A pointer to the P.A.L. handler.
  * \retval          PAL_RC_OK on success, an error otherwise:
- * \retval          PAL_RC_NULL_POINTER if `hpal` is NULL;
+ * \retval          PAL_RC_NULL_POINTER if `pal_handler` is NULL;
  * \retval          PAL_RC_QUEUE_EMPTY if the transmission queue is empty;
  * \retval          PAL_RC_IO_ERROR if the "pop-front" operation fails.
  * \retval          PAL_RC_SERIALIZATION_ERROR if the serialization fails.
  */
-enum PalReturnCode pal_api_process_tx(struct PalHandler *hpal);
+enum PalReturnCode pal_api_process_tx(struct PalHandler *pal_handler);
 
 #endif /*! PAL_API_H */

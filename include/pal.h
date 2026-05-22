@@ -50,14 +50,14 @@ struct PalMessage {
 /*!
  * \brief           Type definition for a function pointer used to deserialize data.
  *
- * \param[in]       in: Pointer to the data to be deserialized.
+ * \param[in]       message: Pointer to the data to be deserialized.
  * \param[out]      out: Pointer to the deserialized data.
  * \retval          PAL_RC_OK on success,
  * \retval          PAL_RC_DESERIALIZATION_ERR if deserialization fails.
  * \retval          PAL_RC_NULL_POINTER if `in` or `out` is NULL
  * \retval          PAL_RC_IO_ERR otherwise.
  */
-typedef enum PalReturnCode (*pal_deserialize_callback)(const struct PalMessage *in, void *out);
+typedef enum PalReturnCode (*pal_deserialize_callback)(const struct PalMessage *message, void *out);
 
 /*!
  * \brief           Type definition for a function pointer used to send data.
