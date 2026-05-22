@@ -262,47 +262,6 @@ void check_pal_api_process_tx_send_ok(void) {
  * @}
  */
 
-/*!
- * \defgroup            Test P.A.L. message reception
- * @{
- */
-//TODO: move to a file specific for functional testing
-void check_pal_api_message_reception(void) {
-    uint8_t in_msg[] = {
-        'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
-    };
-    uint32_t size = 14;
-
-    char out_msg[MESSAGE_MAX_SIZE];
-    pal_api_add_to_rx_queue(&hpal, in_msg, size);
-    pal_api_process_rx(&hpal, out_msg);
-    TEST_ASSERT_EQUAL_STRING(in_msg, out_msg);
-}
-
-/*!
- * @}
- */
-
-/*!
- * \defgroup            Test P.A.L. message transmission
- * @{
- */
-//TODO: move to a file specific for functional testing
-void check_pal_api_message_transmission(void) {
-    pal_api_init(&hpal, RX_CAPACITY, TX_CAPACITY, MESSAGE_MAX_SIZE, NULL, send_global_buff, NULL, NULL, &harena);
-    uint8_t in_msg[] = {
-        'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!', '\0'
-    };
-    uint32_t size = 14;
-    pal_api_add_to_tx_queue(&hpal, in_msg, size);
-    pal_api_process_tx(&hpal);
-    TEST_ASSERT_EQUAL_STRING(in_msg, out_msg_buff);
-}
-
-/*!
- * @}
- */
-
 int main(void) {
     UNITY_BEGIN();
 
@@ -381,24 +340,5 @@ int main(void) {
      * @}
      */
 
-    /*!
-     * \defgroup            Test P.A.L. message reception
-     * @{
-     */
-    RUN_TEST(check_pal_api_message_reception);
-    /*!
-     * @}
-     */
-
-    /*!
-     * \defgroup            Test P.A.L. message transmission
-     * @{
-     */
-
-    RUN_TEST(check_pal_api_message_transmission);
-
-    /*!
-     * @}
-     */
     UNITY_END();
 }
