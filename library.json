@@ -50,7 +50,18 @@
         "pal.h",
         "pal-api.h"
     ],
-    "examples": [],
+    "examples": [
+        {
+            "name": "PAL Basic",
+            "base": "examples",
+            "files": ["pal-basic.c"]
+        },
+        {
+            "name": "PAL Custom Protocol",
+            "base": "examples",
+            "files": ["pal-custom-protocol.c"]
+        }
+    ],
     "export": {
         "include": [
             "src/**",
