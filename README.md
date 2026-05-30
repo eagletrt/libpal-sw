@@ -1,39 +1,29 @@
-# LIBSTM32-SW-TEMPLATE
+# Peripheral Abstraction Layer (P.A.L.)
+The Peripheral Abstraction Layer library implements the logic needed to abstract a generic communication peripheral and its operations especially in embedded projects.
+It provides a unified interface for managing message reception and transmission.
 
-This repository serves as a template for libraries compatible with the
-[PlatformIO ecosystem](https://docs.platformio.org/en/latest/librarymanager/creating.html).
+The library does not operate independently; it requires a software layer to interact with the underlying hardware, which will henceforth be referred to as the "driver".
+Drivers must implement low-level operations such as transmission, reception, serialization, and critical section control, while application logic interacts with a simple API.
 
-## Usage
+## Application Usage
 
-Before starting to develop the library, a couple of things need to be done:
-1. Change this README explaining the library and the functionalities that it offers
-2. Modify the `library.json` including:
-    - The **name** of the library
-    - The library **version**
-    - The **description** explaining what the library does and for which devices
-    - The list of **keywords**
-    - The repository **url** (and type if necessary)
-    - The list of **authors**
-    - The supported **frameworks** and **platforms** (if needed)
-    - The list of **header files** of the library
-    - The list of **examples**
-    - The file of the library to **export** (if needed)
+To use PAL each peripheral may use one or multiple handlers that needs to be initialized.
+The handler requires at least a callback to send the messages and optionally another one for the deserialization.
 
-## Structure
+PAL uses two buffers: one for message transmission and one for message reception.
+To send a message add it to the TX buffer and execute the routine.
+When a message is received it can be added to the RX buffer so it can be later deserializer inside the routine.
 
-The code of the library should be splitted in sources which must be placed inside
-the `src` folder and headers which must be placed inside the `include` folder.
+> [!WARNING]
+> If using the default deserializer, ensure that the destination buffer is big enough to avoid a potential buffer overflow.
 
-Inside the `example` folder multiple source files should be placed to further
-explain how to use the library and how it works in different scenario.
+## Driver Setup
+Drivers act as the bridge between the hardware and PAL.
 
-The library must be tested with the maximum possible code coverage, the source
-code used to run the unit tests should be put inside the `test` folder.
+A driver must:
+- Add the received message to the RX buffer of PAL;
+- Implement the low-level function to serialize and transmit the message to the correct peripheral;
+- Properly handle errors returned by PAL;
 
-If scripts or other tools are needed for the library they must be put inside
-the `tools` folder.
-
-No other folders should be created besides the ones described before if not
-necessary, to handle complex file structures nested folders can be used.
-
-For more info check the READMEs inside the corresponding folders.
+## Examples
+For more info check the [examples](./examples/) folder.

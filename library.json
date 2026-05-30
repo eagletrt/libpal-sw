@@ -1,31 +1,71 @@
 {
-  "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
-  "name": "LibraryTemplate",
-  "version": "1.0.0",
-  "description": "Templates for libraries compatible with the PlatformIO ecosystem",
-  "keywords": [
-    "template"
-  ],
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "authors": [
-    {
-      "name": "Antonio Gelain",
-      "email": "antonio.gelain2@gmail.com",
-      "maintainer": true
+    "$schema": "https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/schema/library.json",
+    "name": "Pal",
+    "version": "0.1.0",
+    "description": "Peripheral Abstraction Layer (PAL) library, suited for all embedded devices",
+    "keywords": [
+        "abstraction",
+        "can",
+        "peripheral"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eagletrt/libpal-sw.git"
+    },
+    "authors": [
+        {
+            "name": "Antonio Gelain",
+            "email": "antonio.gelain2@gmail.com",
+            "maintainer": false
+        },
+        {
+            "name": "Mario Mazzara",
+            "email": "mario.mazzara@eagletrt.it",
+            "maintainer": true
+        },
+        {
+            "name": "Mirko Lana",
+            "email": "mirko.lana@eagletrt.it",
+            "maintainer": false
+        }
+    ],
+    "license": "AGPL-3.0-only",
+    "frameworks": "*",
+    "platforms": "*",
+    "dependencies": [
+        {
+            "name": "ArenaAllocator",
+            "version": "https://github.com/eagletrt/libarena-allocator-sw.git#v2.0.1"
+        },
+        {
+            "name": "RingBuffer",
+            "version": "https://github.com/eagletrt/libring-buffer-sw.git#v0.2.1"
+        },
+        {
+            "name": "LibEagleTrt",
+            "version": "https://github.com/eagletrt/libeagletrt-sw.git#v0.1.0"
+        }
+    ],
+    "headers": [
+        "pal.h",
+        "pal-api.h"
+    ],
+    "examples": [
+        {
+            "name": "PAL Basic",
+            "base": "examples",
+            "files": ["pal-basic.c"]
+        },
+        {
+            "name": "PAL Custom Protocol",
+            "base": "examples",
+            "files": ["pal-custom-protocol.c"]
+        }
+    ],
+    "export": {
+        "include": [
+            "src/**",
+            "include/**"
+        ]
     }
-  ],
-  "license": "AGPL-3.0-only",
-  "frameworks": "*",
-  "platforms": "*",
-  "headers": [],
-  "examples": [],
-  "export": {
-    "include": [
-      "src/**",
-      "include/**"
-    ]
-  }
 }

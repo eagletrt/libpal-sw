@@ -265,6 +265,8 @@ pyrightconfig.json
 .pio
 ### MANUALLY ADDED ###
 .libdeps/
+platformio.ini
+compile_flags.txt
 
 ### VisualStudioCode ###
 **/.vscode/*
@@ -415,8 +417,12 @@ STM32Make.make
 .idea/**
 # jetbrains IDEs
 
+### Doxygen ###
+docs/
+
 ### LOCAL IGNORE ###
 #in case git exclude is not used
 .local_gitignore
+
 
 ## ---------------- END MANUALLY ADDED ---------------- ##

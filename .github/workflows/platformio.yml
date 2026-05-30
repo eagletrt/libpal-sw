@@ -1,0 +1,108 @@
+name: PlatformIO CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - master
+      - dev
+    types:
+      - closed
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        example: [examples/pal-basic.c, examples/pal-custom-protocol.c]
+
+    name: Unit Tests
+    runs-on:
+      group: ci-runners
+      labels: Linux
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache PlatformIO + pip
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio-${{ hashFiles('**/platformio.ini') }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Run Unit Tests (or generate minimal .ini)
+        run: |
+          if [ ! -f "platformio.ini" ]; then
+            printf "[env:latest_stable]\n" > platformio.ini
+            printf "platform = native\n" >> platformio.ini
+            printf "platform_packages = toolchain-gccarmnoneeabi@=1.140201.0\n" >> platformio.ini
+            printf "lib_deps = Unity, ./\n" >> platformio.ini
+            printf "build_flags = -Itest/include \n" >> platformio.ini
+            echo "Created platformio.ini"
+          fi
+          pio test -e latest_stable
+
+      - name: Run Example
+        run: |
+          pio ci -l . --exclude=src/test --exclude=src/examples -O "framework=stm32cube" ${{ matrix.example }} -b nucleo_f446re
+  check:
+    name: Static Code Analysis
+    runs-on:
+      group: ci-runners
+      labels: Linux
+    # Run only when:
+    #  - push to branch dev (e.g. merge commit pushed to dev), OR
+    #  - pull_request event with action closed and merged == true targeting dev
+    if: >
+      (github.event_name == 'push' && github.ref == 'refs/heads/dev') ||
+      (github.event_name == 'pull_request' && github.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'dev')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache PlatformIO + pip
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio-${{ hashFiles('**/platformio.ini') }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PlatformIO Core
+        run: pip install --upgrade platformio
+
+      - name: Run Static Code Analysis
+        run: |
+          if [ ! -f "platformio.ini" ]; then
+            printf "[env:latest_stable]\n" > platformio.ini
+            printf "platform = native\n" >> platformio.ini
+            printf "platform_packages = toolchain-gccarmnoneeabi@=1.140201.0\n" >> platformio.ini
+            printf "check_tool = clangtidy\n" >> platformio.ini
+            printf "check_flags =\n" >> platformio.ini
+            printf "    clangtidy: --checks=-*,cert-*,clang-analyzer-*,bugprone-*,performance-*,readability-*,-bugprone-easily-swappable-parameters\n" >> platformio.ini
+            printf "    clangtidy: --warnings-as-errors=clang-analyzer-*,bugprone-*\n" >> platformio.ini
+            printf "    clangtidy: --header-filter=^(?:.*/)?(?:include|src)/.*\.[ch]$\n" >> platformio.ini
+            printf "    clangtidy: --system-headers=false\n" >> platformio.ini
+            printf "check_src_filters =\n" >> platformio.ini
+            printf "    -<**>\n" >> platformio.ini
+            printf "    +<src/**>\n" >> platformio.ini
+            printf "    +<include/**>\n" >> platformio.ini
+            echo "Created platformio.ini"
+          fi
+          pio check
